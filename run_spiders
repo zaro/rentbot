@@ -55,12 +55,15 @@ def runSpider(spiderName, url, full=False):
     if url:
         command += [f' --set START_URL={url}']
     with open(logPath, 'a+') as log:
+        log.write('Executing:' + str(command) + "\n")
+        log.flush()
         runCommand(command, stdout=log, stderr=log)
     return feedPath
 
 
 def importFeeds(feeds, indexOffsetDays=None):
     command = [
+        #'echo',
         os.path.join(THIS_DIR, "import_feed"),
     ]
     if indexOffsetDays is not None:
@@ -70,6 +73,8 @@ def importFeeds(feeds, indexOffsetDays=None):
     command += [feed for feed in feeds if os.path.exists(feed)]
     logPath = os.path.join(RUN_DIR, 'import.log')
     with open(logPath, 'a+') as log:
+        log.write('Executing:' + str(command) + "\n")
+        log.flush()
         runCommand(command, stdout=log, stderr=log)
 
 
