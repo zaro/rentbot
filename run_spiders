@@ -16,7 +16,7 @@ STOP_AFTER_SKIPPED = 10
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 DATA_DIR = '/srv/'
-DATA_DIR = os.path.join(os.getcwd() + '_test')
+DATA_DIR = os.path.join(os.getcwd(), '_test')
 
 
 RUN_DIR = os.path.join(DATA_DIR, 'crawl', datetime.datetime.now().strftime("%Y-%m-%dT%H-%M"))
