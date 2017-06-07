@@ -3,6 +3,7 @@
 import os
 import datetime
 import subprocess
+import argparse
 
 SPIDERS = {
     'olx': None,
@@ -14,6 +15,9 @@ SPIDERS = {
 }
 STOP_AFTER_SKIPPED = 10
 
+crawlDate = datetime.datetime.now()  # - datetime.timedelta(days=1)
+
+
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 DATA_DIR = '/srv/'
 DATA_DIR = os.path.join(os.getcwd(), '_test')
@@ -22,6 +26,11 @@ DATA_DIR = os.path.join(os.getcwd(), '_test')
 RUN_DIR = os.path.join(DATA_DIR, 'crawl', datetime.datetime.now().strftime("%Y-%m-%dT%H-%M"))
 
 os.makedirs(RUN_DIR, exist_ok=True)
+
+
+def runCommand(*args, **kwargs):
+    #return print(args, kwargs)
+    return subprocess.run(*args, **kwargs)
 
 
 def runSpider(spiderName, url, full=False):
@@ -46,18 +55,31 @@ def runSpider(spiderName, url, full=False):
     if url:
         command += [f' --set START_URL={url}']
     with open(logPath, 'a+') as log:
-        subprocess.run(command, stdout=log, stderr=log)
+        runCommand(command, stdout=log, stderr=log)
     return feedPath
 
 
-def importFeeds(feeds):
+def importFeeds(feeds, indexOffsetDays=None):
     command = [
         os.path.join(THIS_DIR, "import_feed"),
     ]
+    if indexOffsetDays is not None:
+        command = [
+            '--index-date', (crawlDate - datetime.timedelta(days=indexOffsetDays)).date().isoformat()
+        ]
     command += [feed for feed in feeds if os.path.exists(feed)]
     logPath = os.path.join(RUN_DIR, 'import.log')
     with open(logPath, 'a+') as log:
-        subprocess.run(command, stdout=log, stderr=log)
+        runCommand(command, stdout=log, stderr=log)
+
+
+usage = "usage: %prog <feed>"
+description = "Run rentbot Crawlers"
+parser = argparse.ArgumentParser(description=description)
+parser.add_argument("-o", "--offset",
+                    default=None, type=int,
+                    help="Index offset in days")
+args = parser.parse_args()
 
 
 os.chdir(os.path.join(THIS_DIR, 'crawler'))
@@ -71,4 +93,4 @@ for spiderName, urls in SPIDERS.items():
         feeds = [runSpider(spiderName, None)]
 
 os.chdir(RUN_DIR)
-importFeeds(list(set(feeds)))
+importFeeds(list(set(feeds)), args.offset)

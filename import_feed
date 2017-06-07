@@ -57,29 +57,25 @@ INDEX_SETTINGS = {
 }
 
 importDate = datetime.datetime.now() #- datetime.timedelta(days=1)
-indexName = 'rentbot-' + importDate.date().isoformat()
-
-es = Elasticsearch(['localhost:9200'])
-try:
-    es.indices.create(indexName, body=INDEX_SETTINGS)
-except elasticsearch.exceptions.RequestError as e:
-    if e.error != 'index_already_exists_exception':
-        raise
 
 
-def importFeed(feedFileName):
+def indexName(d, s=None):
+    return 'rentbot-' + s if s else d.date().isoformat()
+
+
+def importFeed(feedFileName, index):
     with open(feedFileName, 'r') as f:
         for line in f.readlines():
             doc = json.loads(line)
             doc['import_id'] = doc['source'] + '-' + doc['source_id']
             doc['import_date'] = importDate.isoformat()
             action = {
-                '_index': indexName,
+                '_index': index,
                 '_type': 'ad',
                 '_id': doc['import_id'],
                 '_source': doc
             }
-            print(doc)
+            #print(doc)
             es.index(index=action['_index'], doc_type=action['_type'], id=action['_id'], body=action['_source'])
 
 
@@ -89,10 +85,29 @@ parser = argparse.ArgumentParser(description=description)
 parser.add_argument("feed",
                     nargs="+",
                     help="Feed files to import")
+parser.add_argument("-i", "--index",
+                    default=None,
+                    help="Index name")
+parser.add_argument("-d", "--index-date",
+                    default=None,
+                    help="Index name")
 args = parser.parse_args()
 
+es = Elasticsearch(['localhost:9200'])
+
+if not args.index:
+    args.index = indexName(importDate, args.index_date)
+
+
+try:
+    es.indices.create(args.index, body=INDEX_SETTINGS)
+except elasticsearch.exceptions.RequestError as e:
+    if e.error != 'index_already_exists_exception':
+        raise
+
+print(args.feed)
 for feed in args.feed:
-    importFeed(feed)
+    importFeed(feed, args.index)
 
 
 ##
