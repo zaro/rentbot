@@ -19,7 +19,7 @@ DATA_DIR = '/srv/'
 DATA_DIR = os.path.join(os.getcwd() + '_test')
 
 
-RUN_DIR = DATA_DIR + 'crawl/' + datetime.datetime.now().strftime("%Y-%m-%dT%H-%M")
+RUN_DIR = os.path.join(DATA_DIR, 'crawl', datetime.datetime.now().strftime("%Y-%m-%dT%H-%M"))
 
 os.makedirs(RUN_DIR, exist_ok=True)
 
@@ -54,7 +54,7 @@ def importFeeds(feeds):
     command = [
         os.path.join(THIS_DIR, "import_feed"),
     ]
-    command += feeds
+    command += [feed for feed in feeds if os.path.exists(feed)]
     logPath = os.path.join(RUN_DIR, 'import.log')
     with open(logPath, 'a+') as log:
         subprocess.run(command, stdout=log, stderr=log)
