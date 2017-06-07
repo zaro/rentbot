@@ -37,7 +37,7 @@ def runSpider(spiderName, url, full=False):
     ]
     if not full:
         command += [
-            '--set', 'STOP_AFTER_SKIPPED={STOP_AFTER_SKIPPED}',
+            '--set', f'STOP_AFTER_SKIPPED={STOP_AFTER_SKIPPED}',
         ]
     if full:
         command += [
