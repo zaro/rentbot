@@ -1,0 +1,8 @@
+[all:vars]
+ansible_user=root
+
+[rentbot-es]
+163.172.157.17
+
+[rentbot-web]
+163.172.157.17

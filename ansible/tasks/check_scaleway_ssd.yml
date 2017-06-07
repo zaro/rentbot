@@ -1,0 +1,41 @@
+- name: Check if there is Scaleway sda disk
+  stat: path=/etc/scw-release
+  register: scaleway_release
+- set_fact:
+    use_sda_disk: "{{ scaleway_release.stat.exists == True and 'sda' in ansible_devices }}"
+
+- name: Check if there is Scaleway vdb disk
+  stat: path=/etc/scw-release
+  register: scaleway_release
+- set_fact:
+    use_vdb_disk: "{{ scaleway_release.stat.exists == True and 'vdb' in ansible_devices }}"
+
+- name: Format Scaleway SSD to ext4
+  filesystem:
+    fstype: ext4
+    dev: /dev/sda
+  when: use_sda_disk
+
+- name: Mount Scaleway SSD to /srv/
+  mount:
+    boot: yes
+    state: mounted
+    name: /srv/
+    src: /dev/sda
+    fstype: ext4
+  when: use_sda_disk
+
+- name: Format Scaleway vdb volume to ext4
+  filesystem:
+    fstype: ext4
+    dev: /dev/vdb
+  when: use_vdb_disk
+
+- name: Mount Scaleway vdb volume to /srv/
+  mount:
+    boot: yes
+    state: mounted
+    name: /srv/
+    src: /dev/vdb
+    fstype: ext4
+  when: use_vdb_disk

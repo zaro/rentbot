@@ -1,0 +1,68 @@
+---
+- hosts: rentbot-es
+  tasks:
+    - include: tasks/check_scaleway_ssd.yml
+
+    - name: Install apt-transport-https
+      with_items:
+        - apt-transport-https
+      apt: name={{item}}
+
+    - name: Add Elasticsearch repo
+      apt_repository: repo='deb https://artifacts.elastic.co/packages/5.x/apt stable main'
+
+    - name: Add Elasticsearch key
+      apt_key: url=https://artifacts.elastic.co/GPG-KEY-elasticsearch
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Java
+      with_items:
+        - default-jre-headless
+      apt: name={{item}} allow_unauthenticated=yes
+
+    - name: Install Elasticsearch & Kibana
+      with_items:
+        - elasticsearch
+        - kibana
+        - nginx-extras
+        - logrotate
+        - apache2-utils
+      apt: name={{item}} allow_unauthenticated=yes
+
+    - name: Create /srv/elasticsearch
+      file:
+        path: /srv/elasticsearch
+        state: directory
+        owner: elasticsearch
+        group: elasticsearch
+        mode: 0755
+
+    - name: Move elasticsearch data dir to /srv
+      lineinfile:
+        regexp: "^#?path.data:\\s+"
+        line: "path.data: /srv/elasticsearch"
+        dest: "/etc/elasticsearch/elasticsearch.yml"
+
+    - name: Increase Elasticsearch bulk queue size
+      lineinfile:
+        regexp: "^#?thread_pool.bulk.queue_size"
+        line: "thread_pool.bulk.queue_size: 1000"
+        dest: "/etc/elasticsearch/elasticsearch.yml"
+
+    # - name: Install Elasticsearch s3 plugin
+    #   shell: /usr/share/elasticsearch/bin/elasticsearch-plugin install repository-s3
+
+    - name: Restart service - elasticsearch
+      service:
+        name: elasticsearch
+        state: restarted
+        enabled: yes
+
+    - name: Restart service - kibana
+      service:
+        name: kibana
+        state: restarted
+        enabled: yes

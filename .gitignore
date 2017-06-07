@@ -1,0 +1,7 @@
+_test/
+.direnv/
+.scrapy
+node_modules
+*.retry
+*.pyc
+__pycache__

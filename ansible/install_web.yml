@@ -1,0 +1,24 @@
+---
+- hosts: rentbot-web
+  tasks:
+    - include: tasks/check_scaleway_ssd.yml
+
+    - name: Install apt-transport-https
+      with_items:
+        - apt-transport-https
+      apt: name={{item}}
+
+    - name: Add python 3.6 PPA
+      apt_repository:
+        repo: 'ppa:fkrull/deadsnakes'
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Python 3.6
+      with_items:
+        - python3.6
+        - python3.6-dev
+        - build-essential
+      apt: name={{item}} allow_unauthenticated=yes
