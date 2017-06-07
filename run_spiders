@@ -60,6 +60,7 @@ def importFeeds(feeds):
         subprocess.run(command, stdout=log, stderr=log)
 
 
+os.chdir(os.path.join(THIS_DIR, 'crawler'))
 feeds = []
 for spiderName, urls in SPIDERS.items():
     if urls:
@@ -69,4 +70,5 @@ for spiderName, urls in SPIDERS.items():
     else:
         feeds = [runSpider(spiderName, None)]
 
+os.chdir(RUN_DIR)
 importFeeds(list(set(feeds)))

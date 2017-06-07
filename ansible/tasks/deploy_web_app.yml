@@ -1,4 +1,4 @@
-----
+---
 - name: Checkout rentbot
   git: repo=git@gitlab.com:zaro/rentbot.git dest=/srv/rentbot accept_hostkey=yes
 

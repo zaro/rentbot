@@ -16,11 +16,15 @@
       apt:
         update_cache: yes
 
-    - name: Install Python 3.6
+    - name: Install Python 3.6 & other packages
       with_items:
+        - git
+        - tmux
         - python3.6
         - python3.6-dev
         - build-essential
+        - libdb-dev
+        - libssl-dev
       apt: name={{item}} allow_unauthenticated=yes
 
     - name: Download get-pip
