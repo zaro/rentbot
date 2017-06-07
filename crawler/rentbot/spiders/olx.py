@@ -8,7 +8,7 @@ from ..util import normalizePrice, priceInEuro, normalizeMonths
 from .basespider import BaseSpider
 
 
-class OlxSpider(scrapy.Spider):
+class OlxSpider(BaseSpider):
     name = "olx"
 
     def start_requests(self):
