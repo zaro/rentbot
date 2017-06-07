@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3.6
 
 import os
 import datetime
@@ -14,15 +14,14 @@ SPIDERS = {
 }
 STOP_AFTER_SKIPPED = 10
 
+THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 DATA_DIR = '/srv/'
 DATA_DIR = './_test/'
 
 
 RUN_DIR = DATA_DIR + 'crawl/' + datetime.datetime.now().strftime("%Y-%m-%dT%H:%M")
-FEEDS_DIR = DATA_DIR + 'feeds/'
 
 os.makedirs(RUN_DIR, exist_ok=True)
-os.makedirs(FEEDS_DIR, exist_ok=True)
 
 
 def runSpider(spiderName, url, full=False):
@@ -30,7 +29,9 @@ def runSpider(spiderName, url, full=False):
     feedPath = os.path.join(RUN_DIR, feedFile)
     logPath = os.path.join(RUN_DIR, f'{spiderName}.log')
     command = [
-        'echo', f'{spiderName}',
+        #'echo',
+        'scrapy',
+        'crawl', spiderName,
         '--set', f'FEED_URI=file://{feedPath}',
         '--set', 'DELTAFETCH_ENABLED=1',
     ]
@@ -49,17 +50,23 @@ def runSpider(spiderName, url, full=False):
     return feedPath
 
 
-def copyFeeds(spiderName, feedPath):
-    try:
-        feedSize = os.path.getsize(feedPath)
-    except:
-        feedSize = 0
-    if feedSize > 0:
-        os.rename(feedPath, os.path.join(FEEDS_DIR, f'{spiderName}.jl'))
+def importFeeds(feeds):
+    command = [
+        os.path.join(THIS_DIR, "import_feed"),
+    ]
+    command += feeds
+    logPath = os.path.join(RUN_DIR, 'import.log')
+    with open(logPath, 'a+') as log:
+        subprocess.run(command, stdout=log, stderr=log)
 
+
+feeds = []
 for spiderName, urls in SPIDERS.items():
     if urls:
         for url in urls:
-            runSpider(spiderName, url)
+            feedPath = runSpider(spiderName, url)
+            feeds.append(feedPath)
     else:
-        runSpider(spiderName, None)
+        feeds = [runSpider(spiderName, None)]
+
+importFeeds(list(set(feeds)))

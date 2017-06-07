@@ -22,3 +22,14 @@
         - python3.6-dev
         - build-essential
       apt: name={{item}} allow_unauthenticated=yes
+
+    - name: Download get-pip
+      get_url:
+        url: https://bootstrap.pypa.io/get-pip.py
+        dest: /tmp/get-pip.py
+        mode: 0755
+
+    - name: Install pip
+      command: python3.6 /tmp/get-pip.py
+
+    - include: tasks/deploy_web_app.yml

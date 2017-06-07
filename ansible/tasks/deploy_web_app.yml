@@ -1,0 +1,11 @@
+----
+- name: Checkout rentbot
+  git: repo=git@gitlab.com:zaro/rentbot.git dest=/srv/rentbot accept_hostkey=yes
+
+- name: Install rentbot requirements.txt
+  pip: requirements=/srv/rentbot/requirements.txt
+
+# - name: Django - Generate per site uWSGI config
+#   shell: cd /opt/microgram ; ./for_each_manage gen_uwsgi_config ;
+
+#- include: install_restart_service.yml name=microgram-web
