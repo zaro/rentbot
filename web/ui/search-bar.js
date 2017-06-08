@@ -65,7 +65,7 @@ class SearchBarComponent extends React.Component {
         <TextField
           floatingLabelText="Търси в обяви"
           fullWidth={true}
-          defaultValue={query.q}
+          value={query.q}
           ref={(ref) => {this.qField = ref}}
         />
         <Toolbar>
