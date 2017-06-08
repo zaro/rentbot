@@ -22,7 +22,7 @@ class SearchBarComponent extends React.Component {
 
   getCurrentQuery() {
     const {searchResults} = this.props;
-    const query = searchResults.query || { q:'', sortBy:'time', sortOrder:'desc', minPrice:0, maxPrice: 0};
+    const query = Object.assign({ q:'', sortBy:'time', sortOrder:'desc', minPrice:0, maxPrice: 0}, searchResults.query)
     return query;
   }
 
