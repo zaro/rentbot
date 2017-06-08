@@ -5,7 +5,17 @@
 - name: Install rentbot requirements.txt
   pip: requirements=/srv/rentbot/requirements.txt
 
-# - name: Django - Generate per site uWSGI config
-#   shell: cd /opt/microgram ; ./for_each_manage gen_uwsgi_config ;
+# - name: Install packages based on package.json
+#   npm:
+#     path: /srv/rentbot/web/
+- name: Install packages based on package.json
+  shell: npm install
+  args:
+    chdir: /srv/rentbot/web/
 
-#- include: install_restart_service.yml name=microgram-web
+- name: Build static files
+  command: /srv/rentbot/web/build.sh
+
+- include: deploy_reverse_proxy.yml
+
+- include: install_restart_service.yml name=naematel

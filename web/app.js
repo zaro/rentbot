@@ -1,26 +1,41 @@
 const express = require('express')
 const expressValidator = require('express-validator');
+var morgan = require('morgan')
 const bodyParser = require('body-parser');
 const app = express()
 var nunjucks  = require('nunjucks');
 var elasticsearch = require('elasticsearch');
 
+
+const DEV_MODE = process.env.NODE_ENV
+
+// Configure express app
+app.set('trust proxy', true)
+
+
 var es = new elasticsearch.Client({
   host: 'localhost:9200',
 });
+
+if (app.settings.env === 'development' ) {
+  app.use(morgan('combined'));
+}
 
 app.use(bodyParser.json({ strict: true }));
 app.use(expressValidator([])); // this line must be immediately after any of the bodyParser middlewares!
 
 
-var webpackDevMiddleware = require("webpack-dev-middleware");
-var webpack = require("webpack");
-var webpackConfig = require("./webpack.config");
-var compiler = webpack(webpackConfig);
+if (app.settings.env === 'development' ) {
+  var webpackDevMiddleware = require("webpack-dev-middleware");
+  var webpack = require("webpack");
+  var webpackConfig = require("./webpack.config");
+  var compiler = webpack(webpackConfig);
 
-app.use(webpackDevMiddleware(compiler, {
-  publicPath: "/static/" // Same as `output.publicPath` in most cases.
-}));
+  app.use('/static', express.static('static'))
+  app.use(webpackDevMiddleware(compiler, {
+    publicPath: "/js/" // Same as `output.publicPath` in most cases.
+  }));
+}
 
 nunjucks.configure('templates', {
   autoescape: true,
@@ -106,8 +121,6 @@ app.post('/search', function (req, res) {
     });
   });
 })
-
-app.use(express.static('static'))
 
 app.listen(8080, function () {
   console.log('Example app listening on port 8080!')

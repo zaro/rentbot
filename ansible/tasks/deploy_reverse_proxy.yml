@@ -1,0 +1,13 @@
+---
+- name: Generate nginx configuration files
+  template:
+    src: nginx/_Nginx_site
+    dest: /etc/nginx/sites-enabled/default
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Restart Nginx
+  service:
+    name: nginx
+    state: restarted

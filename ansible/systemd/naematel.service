@@ -1,0 +1,15 @@
+[Unit]
+Description=naematel.com web app
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/node app.js
+WorkingDirectory=/srv/rentbot/web
+Restart=always
+User=www-data
+Group=www-data
+
+
+[Install]
+WantedBy=multi-user.target
