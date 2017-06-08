@@ -37,6 +37,7 @@ class ResultComponent extends React.Component {
   }
   render() {
     const {ad, listIndex, listTotal } = this.props;
+    const images = ad.images || [];
     const bullets = ad.bullets || [];
     const details = [];
     for(const k in ad.details) {
@@ -53,7 +54,7 @@ class ResultComponent extends React.Component {
 
           <div style={styles.root}>
             <GridList  style={styles.gridList} cols={2.2}>
-            {ad.images && ad.images.map((url, idx) => (
+            {images.map((url, idx) => (
               <GridTile key={idx}>
                 <img src={url} onClick={this.openLightbox}/>
               </GridTile>
@@ -64,7 +65,7 @@ class ResultComponent extends React.Component {
             backdropClosesModal={true}
             currentImage={this.state.currentImage}
             imageCountSeparator=' от '
-            images={ad.images.map(src => ({src}))}
+            images={images.map(src => ({src}))}
             isOpen={this.state.lightboxIsOpen}
             onClickPrev={this.prevImage}
             onClickNext={this.nextImage}
