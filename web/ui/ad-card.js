@@ -37,12 +37,24 @@ class ResultComponent extends React.Component {
   }
   render() {
     const {ad, listIndex, listTotal } = this.props;
+    const description = (ad.description || "");
     const images = ad.images || [];
     const bullets = ad.bullets || [];
     const details = [];
     for(const k in ad.details) {
       const v = ad.details[k];
       details.push(`${v.name}: ${v.value}`);
+    }
+    let r;
+    const urlRegex = /(https?:\/\/\S+)/gi;
+    let idx = 0;
+    const descriptionArray = []
+    while((r = urlRegex.exec(description)) !== null) {
+      // console.log('TEXT',description.substr(idx, r.index-idx));
+      // console.log('URL',r[0]);
+      descriptionArray.push(description.substr(idx, r.index-idx))
+      descriptionArray.push(<a href={r[0]} target="_blank" key={idx} >{r[0]}</a>)
+      idx = urlRegex.lastIndex;
     }
     return (
       <Card>
@@ -76,7 +88,7 @@ class ResultComponent extends React.Component {
           </div>
         </CardMedia>
         <CardText>
-          <div style={styles.description}>{ad.description}</div>
+          <div style={styles.description}>{descriptionArray}</div>
           <div style={styles.wrapper}>
             {
               details.map(b => <Chip style={styles.chip} key={b}>{b}</Chip>)
@@ -120,6 +132,7 @@ const styles = {
     marginTop: '.5em',
     marginBottom: '.5em',
     fontSize: 'large',
+    overflow: 'hidden',
   }
 };
 
