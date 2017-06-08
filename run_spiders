@@ -5,6 +5,8 @@ import datetime
 import subprocess
 import argparse
 import sys
+import glob
+
 
 SPIDERS = {
     'olx': None,
@@ -92,7 +94,7 @@ def importFeeds(feeds, indexOffsetDays=None):
         os.path.join(THIS_DIR, "import_feed"),
     ]
     if indexOffsetDays is not None:
-        command = [
+        command += [
             '--index-date', (crawlDate - datetime.timedelta(days=indexOffsetDays)).date().isoformat()
         ]
     command += [feed for feed in feeds if os.path.exists(feed)]
@@ -112,6 +114,9 @@ parser.add_argument("--force-incremental",
 parser.add_argument("--dry-run",
                     action="store_true",
                     help="Dry run, only print commands don't execute them")
+parser.add_argument("--import-dir",
+                    default=None,
+                    help="Import *.jl files from dir, don't run spiders")
 parser.add_argument("spider",
                     nargs="*",
                     help="spiders to run")
@@ -134,21 +139,28 @@ if args.force_full:
     FULL_SCRAPE = True
 
 
-os.chdir(os.path.join(THIS_DIR, 'crawler'))
 feeds = []
-for spiderName in spidersToRun:
-    if spiderName not in SPIDERS:
-        print(f'Invalid spider name {spiderName}, ignoring')
-        continue
-    spiderConfig = SPIDERS[spiderName]
-    config = spiderConfig or {}
-    urls = config.get('urls', None)
-    if urls:
-        for url in urls:
-            feedPath = runSpider(spiderName, url, config, FULL_SCRAPE)
-            feeds.append(feedPath)
-    else:
-        feeds = [runSpider(spiderName, None, config, FULL_SCRAPE)]
+if args.import_dir:
+    feeds = glob.glob(os.path.join(args.import_dir, '*.jl'))
+    feeds = [os.path.abspath(feed) for feed in feeds]
+    if not feeds:
+        print(f'No files found in {args.import_dir}. Exiting!')
+        exit(-1)
+else:
+    os.chdir(os.path.join(THIS_DIR, 'crawler'))
+    for spiderName in spidersToRun:
+        if spiderName not in SPIDERS:
+            print(f'Invalid spider name {spiderName}, ignoring')
+            continue
+        spiderConfig = SPIDERS[spiderName]
+        config = spiderConfig or {}
+        urls = config.get('urls', None)
+        if urls:
+            for url in urls:
+                feedPath = runSpider(spiderName, url, config, FULL_SCRAPE)
+                feeds.append(feedPath)
+        else:
+            feeds = [runSpider(spiderName, None, config, FULL_SCRAPE)]
 
 os.chdir(RUN_DIR)
 # Import in todays index
