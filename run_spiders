@@ -4,6 +4,7 @@ import os
 import datetime
 import subprocess
 import argparse
+import sys
 
 SPIDERS = {
     'olx': None,
@@ -26,7 +27,8 @@ crawlDate = datetime.datetime.now()  # - datetime.timedelta(days=1)
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 DATA_DIR = '/srv/'
-DATA_DIR = os.path.join(os.getcwd(), '_test')
+if sys.platform == "darwin":
+    DATA_DIR = os.path.join(os.getcwd(), '_test')
 
 
 RUN_DIR = os.path.join(DATA_DIR, 'crawl', datetime.datetime.now().strftime("%Y-%m-%dT%H-%M"))
