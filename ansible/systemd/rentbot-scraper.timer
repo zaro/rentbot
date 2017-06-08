@@ -1,0 +1,9 @@
+[Unit]
+Description=Run database backup daily
+
+[Timer]
+OnCalendar=00,04,08,12,16,20:08:08
+Persistent=false
+
+[Install]
+WantedBy=timers.target

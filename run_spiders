@@ -56,6 +56,7 @@ def runCommand(*args, **kwargs):
 
 
 def runSpider(spiderName, url, config, full):
+    print(f'Running FULL={full} spider {spiderName} URL={url} ')
     feedFile = f'{spiderName}.jl'
     feedPath = os.path.join(RUN_DIR, feedFile)
     logPath = os.path.join(RUN_DIR, f'{spiderName}.log')
@@ -100,12 +101,12 @@ def importFeeds(feeds, indexOffsetDays=None):
 usage = "usage: %prog <feed>"
 description = "Run rentbot Crawlers"
 parser = argparse.ArgumentParser(description=description)
-parser.add_argument("-o", "--offset",
-                    default=None, type=int,
-                    help="Index offset in days")
-parser.add_argument("--full",
+parser.add_argument("--force-full",
                     action="store_true",
-                    help="Run full scrape instead of incremental")
+                    help="Force full scrape")
+parser.add_argument("--force-incremental",
+                    action="store_true",
+                    help="Force incremental scrape")
 parser.add_argument("--dry-run",
                     action="store_true",
                     help="Dry run, only print commands don't execute them")
@@ -121,6 +122,16 @@ if not spidersToRun:
 
 DRY_RUN = args.dry_run
 
+# run full scrape between 00:00 and 01:00
+FULL_SCRAPE = 0 <= datetime.datetime.now().hour < 1
+
+if args.force_incremental:
+    FULL_SCRAPE = False
+
+if args.force_full:
+    FULL_SCRAPE = True
+
+
 os.chdir(os.path.join(THIS_DIR, 'crawler'))
 feeds = []
 for spiderName in spidersToRun:
@@ -132,10 +143,13 @@ for spiderName in spidersToRun:
     urls = config.get('urls', None)
     if urls:
         for url in urls:
-            feedPath = runSpider(spiderName, url, config, args.full)
+            feedPath = runSpider(spiderName, url, config, FULL_SCRAPE)
             feeds.append(feedPath)
     else:
-        feeds = [runSpider(spiderName, None, config, args.full)]
+        feeds = [runSpider(spiderName, None, config, FULL_SCRAPE)]
 
 os.chdir(RUN_DIR)
-importFeeds(list(set(feeds)), args.offset)
+# Import in todays index
+importFeeds(list(set(feeds)), None)
+# Import in tomorrows index
+importFeeds(list(set(feeds)), 1)

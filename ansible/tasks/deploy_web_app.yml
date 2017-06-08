@@ -19,3 +19,5 @@
 - include: deploy_reverse_proxy.yml
 
 - include: install_restart_service.yml name=naematel
+
+- include: install_timer.yml name=rentbot-scraper

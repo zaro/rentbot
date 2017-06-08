@@ -1,0 +1,7 @@
+[Unit]
+Description=rentbot run spiders
+
+[Service]
+Type=oneshot
+ExecStart=/srv/rentbot/run_spiders
+WorkingDirectory=/srv/rentbot/
