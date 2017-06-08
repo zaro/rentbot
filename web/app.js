@@ -48,7 +48,7 @@ app.get('/', function (req, res) {
 
 const searchSchema = {
   'q' : {
-    notEmpty: true,
+    //notEmpty: true,
     errorMessage: 'Invalid query'
   },
   'orQ':{

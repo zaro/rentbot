@@ -20,16 +20,23 @@ class SearchBarComponent extends React.Component {
     dataSource: [],
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({q: null})
+  }
+
   getCurrentQuery() {
     const {searchResults} = this.props;
-    const query = Object.assign({ q:'', sortBy:'time', sortOrder:'desc', minPrice:0, maxPrice: 0}, searchResults.query)
+    const query = Object.assign(
+      { q:'', sortBy:'time', sortOrder:'desc', minPrice:0, maxPrice: 0},
+      searchResults.query,
+      (typeof(this.state.q) === 'string') ? {q: this.state.q} : {},
+    );
     return query;
   }
 
   query = (q) => {
-    console.log(q);
     const query = this.getCurrentQuery();
-    this.props.search(Object.assign({},query, {q}));
+    this.props.search(Object.assign({}, query, {q}));
   }
 
   sortOrder = (sortOrder) => {
@@ -55,7 +62,8 @@ class SearchBarComponent extends React.Component {
   onSubmit = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    this.query(this.qField.getInputNode().value);
+    const query = this.getCurrentQuery();
+    this.query(query.q);
   }
 
   render(){
@@ -66,7 +74,7 @@ class SearchBarComponent extends React.Component {
           floatingLabelText="Търси в обяви"
           fullWidth={true}
           value={query.q}
-          ref={(ref) => {this.qField = ref}}
+          onChange={(e, value) => {this.setState({q: value})}}
         />
         <Toolbar>
           <ToolbarGroup>
