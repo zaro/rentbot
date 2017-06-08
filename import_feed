@@ -60,7 +60,7 @@ importDate = datetime.datetime.now() #- datetime.timedelta(days=1)
 
 
 def indexName(d, s=None):
-    return 'rentbot-' + s if s else d.date().isoformat()
+    return 'rentbot-' + (s if s else d.date().isoformat())
 
 
 def importFeed(feedFileName, index):
@@ -109,9 +109,9 @@ except elasticsearch.exceptions.RequestError as e:
         raise
 
 for feed in args.feed:
-    print(f'Index[f{args.index}] Importing feed: {feed}')
+    print(f'Index[{args.index}] Importing feed: {feed}')
     numImported = importFeed(feed, args.index)
-    print(f'Index[f{args.index}] {numImported} records imported')
+    print(f'Index[{args.index}] {numImported} records imported')
 
 
 ##
