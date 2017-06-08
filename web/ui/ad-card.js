@@ -53,7 +53,7 @@ class ResultComponent extends React.Component {
 
           <div style={styles.root}>
             <GridList  style={styles.gridList} cols={2.2}>
-            {ad.images.map((url, idx) => (
+            {ad.images && ad.images.map((url, idx) => (
               <GridTile key={idx}>
                 <img src={url} onClick={this.openLightbox}/>
               </GridTile>
