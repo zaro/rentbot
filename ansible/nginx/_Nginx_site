@@ -40,8 +40,8 @@ server {
 
 
 server {
-        access_log /var/log/nginx/kibana/kibana.access.log combined;
-        error_log /var/log/nginx/kibana/kibana.error.log;
+        access_log /var/log/nginx/kibana.access.log combined;
+        error_log /var/log/nginx/kibana.error.log;
 
         server_name kibana.naematel.com;
 
