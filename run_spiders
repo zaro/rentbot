@@ -8,10 +8,16 @@ import argparse
 SPIDERS = {
     'olx': None,
     'imot': None,
-    'fbGroup': [
-        'https://m.facebook.com/groups/kvartiti.pod.naem/',
-        'https://m.facebook.com/groups/apartamenti.sofia/',
-    ]
+    'fbGroup': {
+        'settings': [
+            'ROBOTSTXT_OBEY=0',
+            "USER_AGENT=Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:54.0) Gecko/20100101 Firefox/54.0"
+        ],
+        'urls': [
+            'https://m.facebook.com/groups/kvartiti.pod.naem/',
+            'https://m.facebook.com/groups/apartamenti.sofia/',
+        ]
+    }
 }
 STOP_AFTER_SKIPPED = 10
 
@@ -27,18 +33,33 @@ RUN_DIR = os.path.join(DATA_DIR, 'crawl', datetime.datetime.now().strftime("%Y-%
 
 os.makedirs(RUN_DIR, exist_ok=True)
 
+DRY_RUN = False
+
 
 def runCommand(*args, **kwargs):
-    #return print(args, kwargs)
-    return subprocess.run(*args, **kwargs)
+    logPath = kwargs.pop('logPath', None)
+    if logPath:
+        log = open(logPath, 'a+')
+    else:
+        log = None
+    log.write('Executing:' + str(args[0]) + "\n")
+    log.flush()
+    kwargs['stdout'] = log
+    kwargs['stderr'] = log
+    if DRY_RUN:
+        result = True
+    else:
+        result = subprocess.run(*args, **kwargs)
+    log.flush()
+    log.close()
+    return result
 
 
-def runSpider(spiderName, url, full=False):
+def runSpider(spiderName, url, config, full):
     feedFile = f'{spiderName}.jl'
     feedPath = os.path.join(RUN_DIR, feedFile)
     logPath = os.path.join(RUN_DIR, f'{spiderName}.log')
     command = [
-        #'echo',
         'scrapy',
         'crawl', spiderName,
         '--set', f'FEED_URI=file://{feedPath}',
@@ -52,18 +73,19 @@ def runSpider(spiderName, url, full=False):
         command += [
             '--set', 'DELTAFETCH_RESET=1'
         ]
+    settings = config.get('settings', [])
+    for setting in settings:
+        command += [
+            '--set', setting
+        ]
     if url:
         command += ['--set', f'START_URL={url}']
-    with open(logPath, 'a+') as log:
-        log.write('Executing:' + str(command) + "\n")
-        log.flush()
-        runCommand(command, stdout=log, stderr=log)
+    runCommand(command, logPath=logPath)
     return feedPath
 
 
 def importFeeds(feeds, indexOffsetDays=None):
     command = [
-        #'echo',
         os.path.join(THIS_DIR, "import_feed"),
     ]
     if indexOffsetDays is not None:
@@ -72,10 +94,7 @@ def importFeeds(feeds, indexOffsetDays=None):
         ]
     command += [feed for feed in feeds if os.path.exists(feed)]
     logPath = os.path.join(RUN_DIR, 'import.log')
-    with open(logPath, 'a+') as log:
-        log.write('Executing:' + str(command) + "\n")
-        log.flush()
-        runCommand(command, stdout=log, stderr=log)
+    runCommand(command, logPath=logPath)
 
 
 usage = "usage: %prog <feed>"
@@ -84,18 +103,39 @@ parser = argparse.ArgumentParser(description=description)
 parser.add_argument("-o", "--offset",
                     default=None, type=int,
                     help="Index offset in days")
+parser.add_argument("--full",
+                    action="store_true",
+                    help="Run full scrape instead of incremental")
+parser.add_argument("--dry-run",
+                    action="store_true",
+                    help="Dry run, only print commands don't execute them")
+parser.add_argument("spider",
+                    nargs="*",
+                    help="spiders to run")
 args = parser.parse_args()
 
+spidersToRun = args.spider
+if not spidersToRun:
+    spidersToRun = SPIDERS.keys()
+
+
+DRY_RUN = args.dry_run
 
 os.chdir(os.path.join(THIS_DIR, 'crawler'))
 feeds = []
-for spiderName, urls in SPIDERS.items():
+for spiderName in spidersToRun:
+    if spiderName not in SPIDERS:
+        print(f'Invalid spider name {spiderName}, ignoring')
+        continue
+    spiderConfig = SPIDERS[spiderName]
+    config = spiderConfig or {}
+    urls = config.get('urls', None)
     if urls:
         for url in urls:
-            feedPath = runSpider(spiderName, url)
+            feedPath = runSpider(spiderName, url, config, args.full)
             feeds.append(feedPath)
     else:
-        feeds = [runSpider(spiderName, None)]
+        feeds = [runSpider(spiderName, None, config, args.full)]
 
 os.chdir(RUN_DIR)
 importFeeds(list(set(feeds)), args.offset)
