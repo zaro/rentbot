@@ -36,7 +36,7 @@ class ResultComponent extends React.Component {
     this.setState({currentImage: prev})
   }
   render() {
-    const {ad} = this.props;
+    const {ad, listIndex, listTotal } = this.props;
     const bullets = ad.bullets || [];
     const details = [];
     for(const k in ad.details) {
@@ -46,16 +46,15 @@ class ResultComponent extends React.Component {
     return (
       <Card>
         <CardTitle
-          title={<a href={ad.url} target='_blank'>[{ad.price_euro} €] {ad.title} <FontIcon className="material-icons" >link</FontIcon></a>}
+          title={<div><a href={ad.url} target='_blank'>{ad.price_euro && `[${ad.price_euro} €]`} {ad.title || 'Виж оригиналната обява'} <FontIcon className="material-icons" >link</FontIcon></a><div style={{float: 'right'}}>{listIndex}/{listTotal}</div></div>}
           subtitle={`Дата: ${new Date(ad.time).toLocaleString()}, Id: ${ad.source_id}`}
         />
         <CardMedia>
+
           <div style={styles.root}>
             <GridList  style={styles.gridList} cols={2.2}>
             {ad.images.map((url, idx) => (
-              <GridTile
-                key={idx}
-              >
+              <GridTile key={idx}>
                 <img src={url} onClick={this.openLightbox}/>
               </GridTile>
             ))}

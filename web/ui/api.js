@@ -16,9 +16,15 @@ function apiCall(endPoint, params=null, method='POST') {
 }
 
 export
-function search(q, sortBy, sortOrder, from=0, size=10) {
-  const params = {q, orQ: 'and', sortBy, sortOrder, count: false, size, from};
+const DEFAULT_SEARCH = {orQ: 'and', count: false, from:0, size:20, minPrice:0, maxPrice: 0, sortBy:'time', sortOrder: 'desc'};
+
+export
+function search(query) {
+  const params = Object.assign({}, DEFAULT_SEARCH, query);
   return apiCall(`/search`, params).then(response => {
+    if(query.count){
+      return response;
+    }
     if(response.hits && response.hits.hits) {
       response.hits.hitSources = response.hits.hits.map((v) => v._source);
       return response.hits;
@@ -31,5 +37,5 @@ function search(q, sortBy, sortOrder, from=0, size=10) {
 
 export
 function getTotalAdCount() {
-  return apiCall('/search', {q: '*', orQ: 'and', sortBy:'time', sortOrder: 'asc', count: true, from:0, size:0});
+  return search({q: '*', count: true, size:0});
 }

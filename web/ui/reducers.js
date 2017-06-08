@@ -1,5 +1,6 @@
+import PersistenStorage from './persistent-storage';
 import { combineReducers } from 'redux';
-import { TOTAL_AD_COUNT, START_SEARCH, SEARCH_RESULTS_AVAILABLE, SEARCH_RESULTS_NEXT, NEW_SEARCH } from './actions'
+import { TOTAL_AD_COUNT, START_SEARCH, SEARCH_RESULTS_AVAILABLE, SEARCH_RESULTS_NEXT, NEW_SEARCH, CLEAR_SEARCH } from './actions'
 
 function counters(state={}, action) {
   switch (action.type) {
@@ -10,7 +11,6 @@ function counters(state={}, action) {
       return state;
   }
 }
-
 
 function searchResults(state={}, action) {
   switch (action.type) {
@@ -27,8 +27,12 @@ function searchResults(state={}, action) {
       };
       return Object.assign({}, state, newState);
     case NEW_SEARCH:
+      PersistenStorage.save('lastQuery', action.query);
       return {searching: true, results: [], totalCount: 0, query: action.query};
       break;
+    case CLEAR_SEARCH:
+      PersistenStorage.save('lastQuery', null);
+      return {results: [], totalCount: 0};
     default:
       return state;
   }

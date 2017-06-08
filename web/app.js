@@ -69,17 +69,11 @@ const searchSchema = {
     },
     errorMessage: 'Invalid sort order' // Error message for the parameter
   },
-  count:{
-    isBoolean: {
-      options:{}
-    }
-  },
-  from: {
-    isInt: {}
-  },
-  size: {
-    isInt: {}
-  }
+  count:{ isBoolean: {} },
+  minPrice: { isInt: {} },
+  maxPrice: { isInt: {} },
+  from: { isInt: {} },
+  size: { isInt: {} },
 
 }
 
@@ -90,7 +84,22 @@ app.post('/search', function (req, res) {
       res.status(400).json({"error": validationResult.array()});
       return;
     }
-    const {q, orQ, sortBy, sortOrder, count, from, size } = req.body;
+    const {orQ, sortBy, sortOrder, count, from, size } = req.body;
+    let {q, minPrice, maxPrice} = req.body;
+    if (minPrice <= 0) {
+      minPrice = '*';
+    }
+    if (maxPrice <= 0) {
+      maxPrice = '*';
+    }
+    if (minPrice !== '*' || maxPrice !== '*'){
+      const cond = ` price_euro:[${minPrice} TO ${maxPrice}]`
+      if (orQ === 'or') {
+        q = `(${q}) AND ${cond}`
+      } else {
+        q = `${q} ${cond}`
+      }
+    }
     const body = {
         "query": {
             "query_string": {
@@ -109,7 +118,7 @@ app.post('/search', function (req, res) {
       ]
       body["from"] = from;
       body["size"] = size;
-      //console.log('BODY', body);
+      console.log('BODY', body);
       result = es.search({index, body});
     }
     result.then(function (resp) {
