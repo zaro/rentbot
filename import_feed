@@ -64,6 +64,7 @@ def indexName(d, s=None):
 
 
 def importFeed(feedFileName, index):
+    count = 0
     with open(feedFileName, 'r') as f:
         for line in f.readlines():
             doc = json.loads(line)
@@ -77,6 +78,8 @@ def importFeed(feedFileName, index):
             }
             #print(doc)
             es.index(index=action['_index'], doc_type=action['_type'], id=action['_id'], body=action['_source'])
+            count += 1
+    return count
 
 
 usage = "usage: %prog <feed>"
@@ -105,9 +108,10 @@ except elasticsearch.exceptions.RequestError as e:
     if e.error != 'index_already_exists_exception':
         raise
 
-print(args.feed)
 for feed in args.feed:
-    importFeed(feed, args.index)
+    print(f'Index[f{args.index}] Importing feed: {feed}')
+    numImported = importFeed(feed, args.index)
+    print(f'Index[f{args.index}] {numImported} records imported')
 
 
 ##
