@@ -5,6 +5,8 @@ import json
 import datetime
 from elasticsearch import Elasticsearch
 import elasticsearch.exceptions
+from hashlib import blake2b
+import base64
 
 INDEX_SETTINGS = {
     "mappings": {
@@ -64,6 +66,10 @@ def indexName(d, s=None):
     return 'rentbot-all'
 
 
+def makeDocId(s):
+    return base64.urlsafe_b64encode((blake2b(s.encode('utf-8'), digest_size=12).digest())).decode('ascii')
+
+
 def importFeed(feedFileName, index):
     count = 0
     with open(feedFileName, 'r') as f:
@@ -74,7 +80,7 @@ def importFeed(feedFileName, index):
             action = {
                 '_index': index,
                 '_type': 'ad',
-                '_id': doc['import_id'],
+                '_id': makeDocId(doc['import_id']),
                 '_source': doc
             }
             #print(doc)
