@@ -64,7 +64,7 @@ class ResultComponent extends React.Component {
         <CardTitle
           title={<div><a href={ad.url} target='_blank'>{ad.price_euro && `[${ad.price_euro} €]`} {ad.title || 'Виж оригиналната обява'} <FontIcon className="material-icons" >link</FontIcon></a><div style={{float: 'right'}}>{listIndex}/{listTotal}</div></div>}
           subtitle={`Дата: ${new Date(ad.time).toLocaleString()}, Id: ${ad.source_id}`}
-        />
+        >{ad.location_name}</CardTitle>
         <CardMedia>
 
           <div style={styles.root}>
