@@ -108,7 +108,8 @@ app.post('/search', function (req, res) {
             }
         },
     }
-    const index = `<rentbot-{now/d{YYYY-MM-dd}}>`;
+    // const index = `<rentbot-{now/d{YYYY-MM-dd}}>`;
+    const index = `rentbot-all`;
     let result;
     if (count) {
       result = es.count({index, body});

@@ -56,11 +56,12 @@ INDEX_SETTINGS = {
     }
 }
 
-importDate = datetime.datetime.now() #- datetime.timedelta(days=1)
+importDate = datetime.datetime.now() # - datetime.timedelta(days=1)
 
 
 def indexName(d, s=None):
-    return 'rentbot-' + (s if s else d.date().isoformat())
+    #return 'rentbot-' + (s if s else d.date().isoformat())
+    return 'rentbot-all'
 
 
 def importFeed(feedFileName, index):
@@ -69,7 +70,7 @@ def importFeed(feedFileName, index):
         for line in f.readlines():
             doc = json.loads(line)
             doc['import_id'] = doc['source'] + '-' + doc['source_id']
-            doc['import_date'] = importDate.isoformat()
+            doc['import_date'] = importDate.utcnow()
             action = {
                 '_index': index,
                 '_type': 'ad',
@@ -94,6 +95,9 @@ parser.add_argument("-i", "--index",
 parser.add_argument("-d", "--index-date",
                     default=None,
                     help="Index name")
+parser.add_argument("--delete-older",
+                    action="store_true",
+                    help="Index name")
 args = parser.parse_args()
 
 es = Elasticsearch(['localhost:9200'])
@@ -113,5 +117,19 @@ for feed in args.feed:
     numImported = importFeed(feed, args.index)
     print(f'Index[{args.index}] {numImported} records imported')
 
+if args.delete_older:
+    olderThan = "now-7d"
+    deleteQuery = {
+        "query": {
+            "range": {
+                "import_date": {
+                    "lt": olderThan
+                }
+            }
+        }
+    }
+    print(f'Index[{args.index}] Deleted docs older than: {olderThan}')
+    res = es.delete_by_query(args.index, body=deleteQuery)
+    print(f'Index[{args.index}] Deleted : {res}')
 
 ##

@@ -33,13 +33,6 @@ if sys.platform == "darwin":
     DATA_DIR = os.path.join(os.getcwd(), '_test')
 
 
-RUN_DIR = os.path.join(DATA_DIR, 'crawl', datetime.datetime.now().strftime("%Y-%m-%dT%H-%M"))
-
-os.makedirs(RUN_DIR, exist_ok=True)
-
-DRY_RUN = False
-
-
 def runCommand(*args, **kwargs):
     logPath = kwargs.pop('logPath', None)
     if logPath:
@@ -89,7 +82,7 @@ def runSpider(spiderName, url, config, full):
     return feedPath
 
 
-def importFeeds(feeds, indexOffsetDays=None):
+def importFeeds(feeds, deleteOlder=False, indexOffsetDays=None):
     command = [
         os.path.join(THIS_DIR, "import_feed"),
     ]
@@ -97,6 +90,8 @@ def importFeeds(feeds, indexOffsetDays=None):
         command += [
             '--index-date', (crawlDate - datetime.timedelta(days=indexOffsetDays)).date().isoformat()
         ]
+    if deleteOlder:
+        command += ['--delete-older']
     command += [feed for feed in feeds if os.path.exists(feed)]
     logPath = os.path.join(RUN_DIR, 'import.log')
     runCommand(command, logPath=logPath)
@@ -126,17 +121,24 @@ spidersToRun = args.spider
 if not spidersToRun:
     spidersToRun = SPIDERS.keys()
 
-
 DRY_RUN = args.dry_run
 
-# run full scrape between 00:00 and 01:00
-FULL_SCRAPE = 0 <= datetime.datetime.now().hour < 1
+# run full scrape between 00:00 and 01:00 on Sunday
+TODAY = datetime.datetime.now()
+FULL_SCRAPE = 0 <= TODAY.hour < 1 and TODAY.isoweekday() == 7
 
 if args.force_incremental:
     FULL_SCRAPE = False
 
 if args.force_full:
     FULL_SCRAPE = True
+
+CRAWLS_DIR = os.path.join(DATA_DIR, 'crawl')
+rdPrefix = 'full-' if FULL_SCRAPE else 'incr-'
+RUN_DIR = os.path.join(CRAWLS_DIR, rdPrefix + datetime.datetime.now().strftime("%Y-%m-%dT%H-%M"))
+
+os.makedirs(RUN_DIR, exist_ok=True)
+
 
 
 feeds = []
@@ -164,6 +166,4 @@ else:
 
 os.chdir(RUN_DIR)
 # Import in todays index
-importFeeds(list(set(feeds)), None)
-# Import in tomorrows index
-importFeeds(list(set(feeds)), 1)
+importFeeds(list(set(feeds)), FULL_SCRAPE, None)
