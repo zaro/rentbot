@@ -56,6 +56,9 @@ class ResultComponent extends React.Component {
       descriptionArray.push(<a href={r[0]} target="_blank" key={idx} >{r[0]}</a>)
       idx = urlRegex.lastIndex;
     }
+    if (!descriptionArray.length) {
+      descriptionArray.push(description)
+    }
     return (
       <Card>
         <CardTitle
