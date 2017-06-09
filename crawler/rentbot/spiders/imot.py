@@ -22,7 +22,8 @@ class ImotSpider(BaseSpider):
         self.init_base_spider()
 
         urls = [
-            'https://www.imot.bg/pcgi/imot.cgi?act=3&slink=2sb6jx&f1=1',
+            #'https://www.imot.bg/pcgi/imot.cgi?act=3&slink=2sb6jx&f1=1',
+            'https://naemi-sofia.imot.bg/'
         ]
         if self.initial_urls:
             urls = self.initial_urls
@@ -30,20 +31,24 @@ class ImotSpider(BaseSpider):
         for url in urls:
             yield scrapy.Request(url=url, callback=self.parseAdList)
 
+    def parseStartPage(self, response):
+        regionsUrls = response.xpath('/html/body/div[3]/table[3]/tr[1]/td[1]/table[2]/tr[2]/td/a/@href').extract()
+        for regionUrl in regionsUrls:
+            yield scrapy.Request(url=response.urljoin(regionUrl), callback=self.parseAdList)
+
     def parseAdList(self, response):
         adUrlsRaw = response.css('a.photoLink::attr(href)').extract()
         adUrls = list(set(adUrlsRaw))
         for adUrl in adUrls:
             yield scrapy.Request(url=response.urljoin(adUrl), callback=self.parseAd)
-        paginator = response.xpath('//body/div/table[4]/tr/td[1]/table[2]/tr/td[2]')
-        pagesLabels = paginator.xpath('.//a[contains(@class, "pageNumbers")]//text()').extract()
-        curentPage = paginator.css('span.pageNumbersSelect::text').extract()[0]
+        pagesLabels = response.xpath('.//a[contains(@class, "pageNumbers")]//text()').extract()
+        curentPage = response.css('span.pageNumbersSelect::text').extract()[0]
         if self.skipLimitReached():
             return
         nexPageUrl = None
         for nextPage in [str(int(curentPage) + 1), 'Напред']:
             if nextPage in pagesLabels:
-                nexPageUrl = paginator.xpath(f'.//a[contains(@class, "pageNumbers") and contains(.//text(), "{nextPage}")]/@href').extract_first()
+                nexPageUrl = response.xpath(f'.//a[contains(@class, "pageNumbers") and contains(.//text(), "{nextPage}")]/@href').extract_first()
                 break
         if nexPageUrl:
             yield scrapy.Request(url=response.urljoin(nexPageUrl), callback=self.parseAdList)
