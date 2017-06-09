@@ -17,8 +17,8 @@ SPIDERS = {
             "USER_AGENT=Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:54.0) Gecko/20100101 Firefox/54.0"
         ],
         'urls': [
-            'https://m.facebook.com/groups/kvartiti.pod.naem/',
-            'https://m.facebook.com/groups/apartamenti.sofia/',
+            '383690155099840/feed',
+            '467058736744276/feed',
         ]
     }
 }
