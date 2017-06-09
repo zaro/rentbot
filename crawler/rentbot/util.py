@@ -40,6 +40,7 @@ def normalizePrice(price):
         return None
     price = re.sub(r'\s+', ' ', price.strip())
     price = re.sub(r'(?!\d),(?=\d)', '', price)
+    price = re.sub(r'€\s*(\d+)', '\\1 EUR', price)
     price = price.replace('€', 'EUR')
     price = re.sub(r'\$\s*(\d+)', '\\1 USD', price)
     price = re.sub(r'(\d+)\s*\$', '\\1 USD', price)
