@@ -160,7 +160,7 @@ else:
                 feedPath = runSpider(spiderName, url, config, FULL_SCRAPE)
                 feeds.append(feedPath)
         else:
-            feeds = [runSpider(spiderName, None, config, FULL_SCRAPE)]
+            feeds.append(runSpider(spiderName, None, config, FULL_SCRAPE))
 
 os.chdir(RUN_DIR)
 # Import in todays index
