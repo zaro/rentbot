@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import {GridList, GridTile} from 'material-ui/GridList';
 import Chip from 'material-ui/Chip';
+import IconButton from 'material-ui/IconButton';
 import Lightbox from 'react-images';
 import FontIcon from 'material-ui/FontIcon';
 
@@ -36,7 +37,7 @@ class ResultComponent extends React.Component {
     this.setState({currentImage: prev})
   }
   render() {
-    const {ad, listIndex, listTotal } = this.props;
+    const {ad, listIndex, listTotal, isFavourite, addFavourite, removeFavourite} = this.props;
     const description = (ad.description || "");
     const images = ad.images || [];
     const bullets = ad.bullets || [];
@@ -62,8 +63,13 @@ class ResultComponent extends React.Component {
     return (
       <Card>
         <CardTitle
-          title={<div><a href={ad.url} target='_blank'>{ad.price_euro && `[${ad.price_euro} €]`} {ad.title || 'Виж оригиналната обява'} <FontIcon className="material-icons" >link</FontIcon></a><div style={{float: 'right'}}>{listIndex}/{listTotal}</div></div>}
-          subtitle={`Дата: ${new Date(ad.time).toLocaleString()}, Id: ${ad.source_id}`}
+          title={
+            <div>
+              <a href={ad.url} target='_blank'><h1 style={styles.h1}>{ad.price_euro && `[${ad.price_euro} €]`} {ad.title || 'Виж оригиналната обява'} <FontIcon className="material-icons" >link</FontIcon></h1></a>
+              { (listIndex && listTotal) && (<div style={{float: 'right'}}>{listIndex}/{listTotal}</div>)}
+            </div>
+          }
+          subtitle={`Дата: ${new Date(ad.time).toLocaleString()}, Id: ${ad._id}`}
         >{ad.location_name}</CardTitle>
         <CardMedia>
 
@@ -102,13 +108,30 @@ class ResultComponent extends React.Component {
               bullets.map(b => <Chip style={styles.chip} key={b}>{b}</Chip>)
             }
           </div>
+          {addFavourite &&(
+            <IconButton style={styles.favButton} onTouchTap={() => {isFavourite ? removeFavourite(ad._id) : addFavourite(ad._id)}}>
+              { isFavourite
+                ?<FontIcon className="material-icons" >favorite</FontIcon>
+                :<FontIcon className="material-icons" >favorite_border</FontIcon>
+              }
+            </IconButton>
+          )}
+          <div style={{'height':".5em"}}></div>
         </CardText>
+        <CardActions >
+        </CardActions>
       </Card>
     );
   }
 }
 
 const styles = {
+  h1: {
+    fontSize: 'large',
+  },
+  favButton: {
+    float: 'right',
+  },
   root: {
     display: 'flex',
     flexWrap: 'wrap',

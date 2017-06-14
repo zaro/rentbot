@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import TextField from 'material-ui/TextField';
 import AutoComplete from 'material-ui/AutoComplete';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
@@ -14,6 +15,7 @@ import IconClear from 'material-ui/svg-icons/content/clear';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
+import FontIcon from 'material-ui/FontIcon';
 
 class SearchBarComponent extends React.Component {
   state = {
@@ -123,6 +125,7 @@ class SearchBarComponent extends React.Component {
             </DropDownMenu>
           </ToolbarGroup>
           <ToolbarGroup>
+            <Link to="/fav"><FontIcon className="material-icons">favorite</FontIcon></Link>
             <IconButton onTouchTap={this.props.clearSearch}><IconClear/></IconButton>
           </ToolbarGroup>
       </Toolbar>

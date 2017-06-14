@@ -8,7 +8,7 @@ import {GridList, GridTile} from 'material-ui/GridList';
 import FlatButton from 'material-ui/FlatButton';
 import Chip from 'material-ui/Chip';
 import AdCard from './ad-card';
-import {newSearch, startSearch, searchResultsAvailable} from './actions'
+import {newSearch, startSearch, searchResultsAvailable, addFavourite, removeFavourite} from './actions'
 import {search} from './api';
 
 const Message = ({text, children})=>{
@@ -20,7 +20,7 @@ const Message = ({text, children})=>{
   );
 }
 
-const ResultListComponent = ({totalAdCount, searchResults, next, showNewest}) => {
+const ResultListComponent = ({totalAdCount, searchResults, next, showNewest, favourites, addFavourite, removeFavourite}) => {
   if( searchResults.searching === undefined ) {
     if (totalAdCount >= 0) {
       return (
@@ -50,7 +50,14 @@ const ResultListComponent = ({totalAdCount, searchResults, next, showNewest}) =>
     return (
       <div>
         {searchResults.results.map((ad, idx) => (
-          <AdCard ad={ad} key={`${ad.source}${ad.source_id}`} listIndex={idx+1} listTotal={searchResults.totalCount}/>
+          <AdCard ad={ad}
+            key={ad._id}
+            listIndex={idx+1}
+            listTotal={searchResults.totalCount}
+            isFavourite={favourites[ad._id] ? true : false}
+            addFavourite={addFavourite}
+            removeFavourite={removeFavourite}
+          />
         ))}
         {searchResults.searching ? (
           <div>
@@ -102,6 +109,7 @@ const mapStateToProps = (state) => {
   return {
     totalAdCount: state.counters.totalAdCount,
     searchResults: state.searchResults,
+    favourites: state.favourites,
   }
 }
 
@@ -117,6 +125,12 @@ const mapDispatchToProps = (dispatch) => {
       const query = { q: '*', sortBy: 'time', sortOrder: 'desc' };
       dispatch(newSearch(query));
       search(query).then((results) => dispatch(searchResultsAvailable(results.hitSources, results.total)))
+    },
+    addFavourite: (docId) => {
+      dispatch(addFavourite(docId));
+    },
+    removeFavourite: (docId) => {
+      dispatch(removeFavourite(docId));
     }
   }
 }

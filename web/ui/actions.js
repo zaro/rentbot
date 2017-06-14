@@ -3,6 +3,10 @@ export const START_SEARCH = 'START_SEARCH';
 export const SEARCH_RESULTS_AVAILABLE = 'SEARCH_RESULTS_AVAILABLE';
 export const NEW_SEARCH = 'NEW_SEARCH';
 export const CLEAR_SEARCH = 'CLEAR_SEARCH';
+export const LOAD_FAVOURITES = 'LOAD_FAVOURITES';
+export const ADD_FAVOURITE = 'ADD_FAVOURITE';
+export const REMOVE_FAVOURITE = 'REMOVE_FAVOURITE';
+export const FAVOURITES_AVAILABLE = 'FAVOURITES_AVAILABLE';
 
 import {DEFAULT_SEARCH} from './api';
 
@@ -29,4 +33,24 @@ function clearSearch() {
 export
 function searchResultsAvailable(searchResults, totalCount) {
   return { type: SEARCH_RESULTS_AVAILABLE, searchResults, totalCount};
+}
+
+export
+function loadFavourites() {
+  return { type: LOAD_FAVOURITES};
+}
+
+export
+function addFavourite(docId) {
+  return { type: ADD_FAVOURITE, docId};
+}
+
+export
+function removeFavourite(docId) {
+  return { type: REMOVE_FAVOURITE, docId};
+}
+
+export
+function favouritesAvailable(favouritesList) {
+  return { type: FAVOURITES_AVAILABLE, favouritesList};
 }

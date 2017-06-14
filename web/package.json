@@ -12,6 +12,7 @@
     "body-parser": "^1.17.2",
     "elasticsearch": "^13.0.1",
     "express": "^4.15.3",
+    "express-react-views": "^0.10.2",
     "express-validator": "^3.2.0",
     "material-ui": "^0.18.1",
     "morgan": "^1.8.2",
@@ -20,9 +21,11 @@
     "react-dom": "^15.5.4",
     "react-images": "^0.5.4",
     "react-redux": "^5.0.5",
+    "react-router-dom": "^4.1.1",
     "react-tap-event-plugin": "^2.0.1",
     "react-waypoint": "^7.0.3",
-    "redux": "^3.6.0"
+    "redux": "^3.6.0",
+    "response-time": "^2.3.2"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",
