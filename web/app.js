@@ -197,6 +197,7 @@ function singleAdPage(req, res) {
     var component = require('./ui/server/ad');
     // Transpiled ES6 may export components as { default: Component }
     component = component.default || component;
+    doc._source._id = doc._id;
     const markup = ReactDOMServer.renderToStaticMarkup(
       React.createElement(component, {ad: doc._source, userAgent: req.headers['user-agent']})
     );
