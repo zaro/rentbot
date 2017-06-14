@@ -8,6 +8,7 @@ import sys
 import glob
 
 
+ALL_SPIDERS_OPTS = ['HTTPCACHE_ENABLED=0']
 SPIDERS = {
     'olx': None,
     'imot': None,
@@ -63,6 +64,10 @@ def runSpider(spiderName, url, config, full):
         '--set', f'FEED_URI=file://{feedPath}',
         '--set', 'DELTAFETCH_ENABLED=1',
     ]
+    for opt in ALL_SPIDERS_OPTS:
+        command += [
+            '--set', opt,
+        ]
     if not full:
         command += [
             '--set', f'STOP_AFTER_SKIPPED={STOP_AFTER_SKIPPED}',
