@@ -35,7 +35,9 @@ const mapDispatchToProps = (dispatch) => {
     loadFavourites: () => {
       dispatch(loadFavourites());
       const favourites = PersistenStorage.load('favourites');
-      getDocuments(Object.keys(favourites)).then((docs) => dispatch(favouritesAvailable(docs, docs.length)))
+      if (favourites) {
+        getDocuments(Object.keys(favourites)).then((docs) => dispatch(favouritesAvailable(docs, docs.length)))
+      }
 
     },
   }
