@@ -13,13 +13,13 @@ var DEFAULT_OPTIONS = {
   babel: {
     presets: [ 'react', 'es2015',  "stage-0" ],
   },
+  only: 'ui/',
+  cache: !DEV_MODE
 };
 var assign = require('object-assign');
 var React = require('react');
 var ReactDOMServer = require('react-dom/server');
-require('babel-register')(
-        assign({only: 'ui/', cache: !DEV_MODE}, DEFAULT_OPTIONS.babel)
-);
+require('babel-register')(DEFAULT_OPTIONS.babel);
 
 //const index = `<rentbot-{now/d{YYYY-MM-dd}}>`;
 const ES_INDEX = 'rentbot-all';

@@ -5,6 +5,7 @@ After=network.target
 [Service]
 Type=simple
 Environment="NODE_ENV=production"
+Environment="BABEL_CACHE_PATH=/srv/cache/naematel.json"
 ExecStart=/usr/bin/node app.js
 WorkingDirectory=/srv/rentbot/web
 Restart=always

@@ -59,5 +59,12 @@
       command: htpasswd -b /etc/nginx/.htpasswd {{ item.key }} {{ item.value }}
       with_dict: "{{ nginx_users }}"
 
+    - name: Create /srv/cache
+      file:
+        path: /srv/cache
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: 0755
 
     - include: tasks/deploy_web_app.yml
