@@ -38,6 +38,8 @@ def normalizeMonths(timeText):
 def normalizePrice(price):
     if not price:
         return None
+    if price.upper().strip() == 'FREE':
+        return None
     price = re.sub(r'\s+', ' ', price.strip())
     price = re.sub(r'(?!\d),(?=\d)', '', price)
     price = re.sub(r'€\s*(\d+)', '\\1 EUR', price)
