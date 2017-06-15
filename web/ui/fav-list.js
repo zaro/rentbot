@@ -27,6 +27,13 @@ const FavListComponent = ({favourites, addFavourite, removeFavourite}) => {
       }
       return 0;
     });
+    if (results.length == 0) {
+      return (
+        <div style={styles.centerDiv}>
+          <p style={styles.stateMessage}>Нямате любими обяви</p>
+        </div>
+      );
+    }
     return (
       <div>
         {results.map((ad, idx) => {
