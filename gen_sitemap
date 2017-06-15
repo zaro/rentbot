@@ -30,10 +30,13 @@ Disallow:
 
 """
 
+def makeUrl(path):
+    return f'http://naematel.com/{path}'
+
 
 def addEntry(handle, doc, outputDir):
     lastmod = dateparser.parse(doc.get('time', doc.get('import_date', datetime.datetime.now()))).date().isoformat()
-    url = f'http://naematel.com/{doc["_id"]}'
+    url = makeUrl(doc["_id"])
     entry = entryTemplate.format(url=url, lastmod=lastmod)
     if not handle[0]:
         newFilename = f'sitemap-{handle[1]}.xml'
@@ -69,7 +72,8 @@ def genSitemap(outputDir, index):
     with open(os.path.join(outputDir, robots), 'w') as f:
         f.write(robotsTxt)
         for sm in handle[2:]:
-            f.write(f'Sitemap: {sm}\n')
+            url = makeUrl(sm)
+            f.write(f'Sitemap: {url}\n')
 
 
 def removeSitemaps(outDir):
