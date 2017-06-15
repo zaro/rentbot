@@ -145,7 +145,7 @@ app.post('/api/search', function (req, res) {
       ]
       body["from"] = from;
       body["size"] = size;
-      console.log('BODY', body);
+      //console.log('BODY', body);
       result = es.search({index, body});
     }
     result.then(function (resp) {
@@ -179,7 +179,7 @@ app.post('/api/get', function (req, res) {
     const body = {
       "docs": id.map((v) => { return {"_id" : v};})
     }
-    console.log(body);
+    //console.log(body);
     const result = es.mget({index, type: 'ad', body});
     result.then(function (resp) {
         res.json(resp);
