@@ -72,7 +72,10 @@ class ResultComponent extends React.Component {
               { (listIndex && listTotal) && (<div style={{float: 'right'}}>{listIndex}/{listTotal}</div>)}
             </div>
           }
-          subtitle={`Дата: ${new Date(ad.time).toLocaleString()}, Id: ${ad._id}`}
+          subtitle={<span>
+            {`Дата: ${new Date(ad.time).toLocaleString()}, Id:`}
+            <a style={{ textDecoration: 'none' }} href={`/${ad._id}`}>{ad._id}</a>
+          </span>}
         >{ad.location_name}</CardTitle>
         <CardMedia>
 

@@ -202,7 +202,7 @@ function singleAdPage(req, res) {
       React.createElement(component, {ad: doc._source, userAgent: req.headers['user-agent']})
     );
     //console.log(doc);
-    res.render('ad.html', {markup});
+    res.render('ad.html', {markup, ad: doc._source});
   }).catch(e => {
     if (e.statusCode == 404) {
       res.render('404.html', {});
