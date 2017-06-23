@@ -9,3 +9,9 @@ macOS:
 Ubuntu:
 
     apt install libdb-dev
+
+# Generate certiicates on the server :
+
+```
+certbot certonly --webroot -m zarrro@gmail.com --webroot-path=/srv/.well-known/ -d naematel.com -d kibana.naematel.com
+```

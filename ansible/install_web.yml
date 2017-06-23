@@ -15,6 +15,10 @@
       apt_repository:
         repo: 'ppa:fkrull/deadsnakes'
 
+    - name: Add certbot PPA
+      apt_repository:
+        repo: 'ppa:certbot/certbot'
+
     - name: Download nodejs repository script
       get_url:
         url: https://deb.nodesource.com/setup_8.x
@@ -41,6 +45,7 @@
         - nginx-extras
         - logrotate
         - apache2-utils
+        - python-certbot-nginx
       apt: name={{item}} allow_unauthenticated=yes
 
     - name: Download get-pip
@@ -62,6 +67,14 @@
     - name: Create /srv/cache
       file:
         path: /srv/cache
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: 0755
+
+    - name: Create /srv/.well-known
+      file:
+        path: /srv/.well-known
         state: directory
         owner: www-data
         group: www-data

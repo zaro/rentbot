@@ -4,6 +4,13 @@ server {
   return 301 $scheme://naematel.com$request_uri;
 }
 
+server {
+      listen      80;
+      server_name naematel.com;
+      ## redirect http to https ##
+      rewrite        ^ https://$server_name$request_uri? permanent;
+}
+
 
 server {
         access_log /var/log/nginx/naematel.com.access.log combined;
@@ -11,6 +18,17 @@ server {
 
 
         server_name naematel.com;
+
+        #SSL configuration
+      	listen 443 ssl http2;
+
+      	ssl_prefer_server_ciphers on;
+      	ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+      	ssl_ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AES:RSA+3DES:!aNULL:!MD5:!DSS;
+
+      	ssl_certificate /etc/letsencrypt/live/naematel.com/fullchain.pem;
+      	ssl_certificate_key /etc/letsencrypt/live/naematel.com/privkey.pem;
+
 
         gzip_static  on;
 
@@ -50,6 +68,18 @@ server {
           proxy_read_timeout  300;
         }
 
+        location /.well-known/ {
+          root /srv/.well-known;
+        }
+
+}
+
+
+server {
+      listen      80;
+      server_name kibana.naematel.com;
+      ## redirect http to https ##
+      rewrite        ^ https://$server_name$request_uri? permanent;
 }
 
 
@@ -58,6 +88,17 @@ server {
         error_log /var/log/nginx/kibana.error.log;
 
         server_name kibana.naematel.com;
+
+        #SSL configuration
+      	listen 443 ssl http2;
+
+      	ssl_prefer_server_ciphers on;
+      	ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+      	ssl_ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AES:RSA+3DES:!aNULL:!MD5:!DSS;
+
+      	ssl_certificate /etc/letsencrypt/live/naematel.com/fullchain.pem;
+      	ssl_certificate_key /etc/letsencrypt/live/naematel.com/privkey.pem;
+
 
         proxy_set_header HOST $host;
         proxy_set_header X-Forwarded-Proto $scheme;
@@ -71,5 +112,9 @@ server {
             proxy_pass http://127.0.0.1:5601;
 
             proxy_read_timeout          900;
+        }
+
+        location /.well-known/ {
+          root /srv/.well-known;
         }
 }

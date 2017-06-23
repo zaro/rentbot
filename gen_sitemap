@@ -34,7 +34,7 @@ Disallow:
 """
 
 def makeUrl(path):
-    return f'http://naematel.com/{path}'
+    return f'https://naematel.com/{path}'
 
 
 def addEntry(handle, doc, outputDir):
