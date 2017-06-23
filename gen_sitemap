@@ -5,8 +5,11 @@ import glob
 import os
 import datetime
 import dateparser
+import tempfile
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import scan
+import gzip
+import shutil
 
 
 maxEntries = 50000
@@ -67,13 +70,17 @@ def genSitemap(outputDir, index):
         handle[0].write(fileSuffix)
         handle[0].close()
 
+    sitemapFiles = handle[2:]
     robots = f'robots.txt'
     print('Writing in:', robots)
     with open(os.path.join(outputDir, robots), 'w') as f:
         f.write(robotsTxt)
-        for sm in handle[2:]:
+        for sm in sitemapFiles:
             url = makeUrl(sm)
             f.write(f'Sitemap: {url}\n')
+
+    allFiles = sitemapFiles + [robots]
+    return allFiles
 
 
 def removeSitemaps(outDir):
@@ -81,6 +88,14 @@ def removeSitemaps(outDir):
         for f in glob.glob(os.path.join(outDir, 'sitemap-*.' + fmt)):
             print('Remove:', f)
             os.unlink(f)
+
+
+def compressFiles(outputDir, files):
+    for f in files:
+        filePath = os.path.join(outputDir, f)
+        with open(filePath, 'rb') as f_in:
+            with gzip.open(f'{filePath}.gz', 'wb') as f_out:
+                shutil.copyfileobj(f_in, f_out)
 
 
 usage = "usage: %prog <feed>"
@@ -92,12 +107,18 @@ parser.add_argument("-i", "--index",
                     default='rentbot-all',
                     help="Index name")
 args = parser.parse_args()
+outParent = os.path.dirname(os.path.abspath(args.out).rstrip('/'))
+tmpDir = tempfile.mkdtemp(dir=outParent)
 
 es = Elasticsearch(['localhost:9200'])
 
-os.makedirs(args.out, exist_ok=True)
-removeSitemaps(args.out)
+print('Create dir:', tmpDir)
+os.makedirs(tmpDir, exist_ok=True)
 
-genSitemap(args.out, args.index)
-
+allFiles = genSitemap(tmpDir, args.index)
+compressFiles(tmpDir, allFiles)
+print('Remove:', args.out)
+shutil.rmtree(args.out)
+print(f'Rename {tmpDir} -> {args.out}')
+os.rename(tmpDir, args.out)
 ##

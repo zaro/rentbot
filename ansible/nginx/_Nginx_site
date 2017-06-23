@@ -12,6 +12,7 @@ server {
 
         server_name naematel.com;
 
+        gzip_static  on;
 
         proxy_set_header HOST $host;
         proxy_set_header X-Forwarded-Proto $scheme;

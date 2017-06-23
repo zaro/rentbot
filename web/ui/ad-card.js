@@ -65,7 +65,10 @@ class ResultComponent extends React.Component {
         <CardTitle
           title={
             <div>
-              <a href={ad.url} target='_blank'><h1 style={styles.h1}>{ad.price_euro && `[${ad.price_euro} €]`} {ad.title || 'Виж оригиналната обява'} <FontIcon className="material-icons" >link</FontIcon></h1></a>
+              <a href={ad.url} target='_blank'>
+                <h1 style={styles.h1}>{ad.price_euro && `[${ad.price_euro} €]`} {ad.title || 'Виж оригиналната обява'}</h1>
+                <FontIcon className="material-icons">link</FontIcon>
+              </a>
               { (listIndex && listTotal) && (<div style={{float: 'right'}}>{listIndex}/{listTotal}</div>)}
             </div>
           }
@@ -128,6 +131,7 @@ class ResultComponent extends React.Component {
 const styles = {
   h1: {
     fontSize: 'large',
+    display: 'inline-block',
   },
   favButton: {
     float: 'right',
