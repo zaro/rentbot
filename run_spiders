@@ -54,15 +54,18 @@ def runCommand(*args, **kwargs):
 
 
 def runSpider(spiderName, url, config, full):
-    print(f'Running FULL={full} spider {spiderName} URL={url} ')
+    print(f'Running FULL={full} spider {spiderName} URL={url} outDir={RUN_DIR}')
     feedFile = f'{spiderName}.jl'
     feedPath = os.path.join(RUN_DIR, feedFile)
     logPath = os.path.join(RUN_DIR, f'{spiderName}.log')
+    imgPath = os.path.join(DATA_DIR, f'img')
     command = [
         'scrapy',
         'crawl', spiderName,
         '--set', f'FEED_URI=file://{feedPath}',
         '--set', 'DELTAFETCH_ENABLED=1',
+        '--set', f'IMAGES_STORE={imgPath}'
+
     ]
     for opt in ALL_SPIDERS_OPTS:
         command += [

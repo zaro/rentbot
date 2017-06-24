@@ -18,7 +18,8 @@ class BaseSpider(scrapy.Spider):
                 self.initial_urls.append(settings[k])
 
     def skipLimitReached(self):
-        if self.stopAtSkipped and self.stopAtSkipped < self.crawler.stats.get_value('deltafetch/skipped'):
+        skipped = self.crawler.stats.get_value('deltafetch/skipped') or 0
+        if self.stopAtSkipped and (self.stopAtSkipped < skipped):
             #print('DF:', self.crawler.stats.get_value('deltafetch/skipped'))
             return True
         return False

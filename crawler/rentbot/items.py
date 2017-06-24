@@ -18,6 +18,7 @@ class RentbotItem(scrapy.Item):
     title = scrapy.Field()
     description = scrapy.Field()
     images = scrapy.Field()
+    local_images = scrapy.Field()
     details = scrapy.Field()
     bullets = scrapy.Field()
     location_name = scrapy.Field()

@@ -68,6 +68,17 @@ SPIDER_MIDDLEWARES = {
 # ITEM_PIPELINES = {
 #    'rentbot.pipelines.RentbotPipeline': 300,
 # }
+ITEM_PIPELINES = {
+    'rentbot.pipelines.RentbotImagesPipeline': 1
+}
+
+IMAGES_THUMBS = {
+    't150': (150, 150),
+    't300': (300, 300),
+}
+
+IMAGES_URLS_FIELD = 'images'
+IMAGES_RESULT_FIELD = 'local_images'
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
