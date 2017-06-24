@@ -1,0 +1,33 @@
+{% extends "base-amp.html" %}
+
+{% block title %}{{ ad.title }} - Наемател{% endblock %}
+
+{% block headlinks %}
+<link rel="canonical" href="/{{ ad._id }}">
+{% endblock %}
+
+{% block schemascript %}
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Offer",
+  "price": "{{ ad.price_euro }}",
+  "priceCurrency": "EUR",
+  "name": "{{ ad.title|safe }}",
+  "description" : "{{ ad.description|safe }}",
+  {% if ad.images[0] %}
+  "image": "{{ ad.images[0]|safe }}",
+  {% endif %}
+  "datePublished": "{{ ad.time }}",
+  "potentialAction": {
+    "@context": "http://schema.org",
+    "@type": "RentAction",
+  }
+}
+</script>
+{% endblock %}
+
+
+{% block app %}
+{{ markup|safe }}
+{% endblock %}

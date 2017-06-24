@@ -2,6 +2,10 @@
 
 {% block title %}{{ ad.title }} - Наемател{% endblock %}
 
+{% block headlinks %}
+<link rel="amphtml" href="/amp/{{ ad._id }}">
+{% endblock %}
+
 {% block app %}
 <div style="margin-bottom: .5em">
   <a href="/">Обратно към всички обяви</a>

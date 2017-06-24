@@ -3,8 +3,11 @@
   <head>
     <meta charset="utf-8">
     <title>{% block title %}Търси обяви в Наемател{% endblock %}</title>
-    <link rel="icon" type="image/png" href="static/favicon.png">
-    <link rel="shortcut icon" type="image/png" href="static/favicon.png">
+
+    <link rel="icon" type="image/png" href="/static/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="/static/favicon.png">
+    {% block headlinks %}{% endblock %}
+
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet">
     <style>

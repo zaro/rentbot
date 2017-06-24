@@ -192,17 +192,19 @@ app.post('/api/get', function (req, res) {
 })
 
 
-function singleAdPage(req, res) {
+function renderSingleAdPage(req, res, amp) {
+  console.log(amp);
   es.get({index: ES_INDEX, type: 'ad', id: req.params.docId}).then((doc) =>{
     var component = require('./ui/server/ad');
     // Transpiled ES6 may export components as { default: Component }
     component = component.default || component;
     doc._source._id = doc._id;
+    const props = { ad: doc._source, userAgent: req.headers['user-agent'] };
     const markup = ReactDOMServer.renderToStaticMarkup(
-      React.createElement(component, {ad: doc._source, userAgent: req.headers['user-agent']})
+      React.createElement(component, props)
     );
     //console.log(doc);
-    res.render('ad.html', {markup, ad: doc._source});
+    res.render(amp? 'ad-amp.html': 'ad.html', {markup, ad: doc._source});
   }).catch(e => {
     if (e.statusCode == 404) {
       res.render('404.html', {});
@@ -210,11 +212,14 @@ function singleAdPage(req, res) {
       res.end('FAILED: ' + e + '\n' +e.stack)
     }
   })
-
 }
 
-app.get('/:docId/:ignore', singleAdPage);
-app.get('/:docId', singleAdPage);
+app.get('/amp/:docId/:ignore', (req, res) => { renderSingleAdPage(req, res, true) });
+app.get('/amp/:docId', (req, res) => { renderSingleAdPage(req, res, true) });
+
+app.get('/:docId/:ignore', (req, res) => { renderSingleAdPage(req, res, false) });
+app.get('/:docId', (req, res) => { renderSingleAdPage(req, res, false) });
+
 
 app.listen(8080, function () {
   console.log('Example app listening on port 8080!')
