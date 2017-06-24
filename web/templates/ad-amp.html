@@ -18,7 +18,7 @@
   {% if ad.images[0] %}
   "image": "{{ ad.images[0]|safe }}",
   {% endif %}
-  "datePublished": "{{ ad.time }}",
+  "validFrom": "{{ ad.time }}",
   "potentialAction": {
     "@context": "http://schema.org",
     "@type": "RentAction"
