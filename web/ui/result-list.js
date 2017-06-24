@@ -2,11 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux'
 import Waypoint from 'react-waypoint';
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
-import CircularProgress from 'material-ui/CircularProgress';
-import {GridList, GridTile} from 'material-ui/GridList';
-import FlatButton from 'material-ui/FlatButton';
-import Chip from 'material-ui/Chip';
+import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'react-toolbox/lib/card';
+import ProgressBar from 'react-toolbox/lib/progress_bar';
+import Button from 'react-toolbox/lib/button';
+import Chip from 'react-toolbox/lib/chip';
 import AdCard from './ad-card';
 import {newSearch, startSearch, searchResultsAvailable, addFavourite, removeFavourite} from './actions'
 import {search} from './api';
@@ -25,7 +24,7 @@ const ResultListComponent = ({totalAdCount, searchResults, next, showNewest, fav
     if (totalAdCount >= 0) {
       return (
         <Message text={`Търси в ${totalAdCount} обяви`} >
-          <FlatButton primary={true} onTouchTap={showNewest}>Покажи най-новите обяви</FlatButton>
+          <Button flat primary={true} onTouchTap={showNewest}>Покажи най-новите обяви</Button>
         </Message>
       );
     } else {
@@ -36,13 +35,13 @@ const ResultListComponent = ({totalAdCount, searchResults, next, showNewest, fav
     if (searchResults.searching) {
       return (
         <div style={styles.centerDiv}>
-          <CircularProgress size={80} thickness={5} />
+          <ProgressBar type="circular" mode="indeterminate"/>
         </div>
       );
     } else {
       return (
         <Message text="Няма намерени обяви ..." >
-          <FlatButton primary={true} onTouchTap={showNewest}>Покажи най-новите обяви</FlatButton>
+          <Button flat primary={true} onTouchTap={showNewest}>Покажи най-новите обяви</Button>
         </Message>
       );
     }
@@ -62,7 +61,7 @@ const ResultListComponent = ({totalAdCount, searchResults, next, showNewest, fav
         {searchResults.searching ? (
           <div>
             <div style={styles.centerSpinner}>
-              <CircularProgress />
+              <ProgressBar type="circular" />
             </div>
           </div>
         ):(

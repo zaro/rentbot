@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux'
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
-import {GridList, GridTile} from 'material-ui/GridList';
-import Chip from 'material-ui/Chip';
-import IconButton from 'material-ui/IconButton';
+import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'react-toolbox/lib/card';
+import Gallery from './gallery';
+import Chip from 'react-toolbox/lib/chip';
+import { IconButton } from 'react-toolbox/lib/button';
 import Lightbox from 'react-images';
-import FontIcon from 'material-ui/FontIcon';
+import FontIcon from 'react-toolbox/lib/font_icon';
 
 
 class ResultComponent extends React.Component {
@@ -80,14 +80,8 @@ class ResultComponent extends React.Component {
         <CardMedia>
 
           <div style={styles.root}>
-            <GridList  style={styles.gridList} cols={2.2}>
-            {images.map((url, idx) => (
-              <GridTile key={idx}>
-                <img src={url} onClick={this.openLightbox}/>
-              </GridTile>
-            ))}
-          </GridList>
-          <Lightbox
+            <Gallery images={images} />
+          {/* <Lightbox
             showThumbnails={true}
             backdropClosesModal={true}
             currentImage={this.state.currentImage}
@@ -99,7 +93,7 @@ class ResultComponent extends React.Component {
             onClickImage={(e)=>{e.preventDefault(); e.stopPropagation(); this.nextImage()}}
             onClickThumbnail={(currentImage)=>{this.setState({currentImage})}}
             onClose={(e)=>{this.closeLightbox()}}
-          />
+          /> */}
           </div>
         </CardMedia>
         <CardText>

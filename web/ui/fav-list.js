@@ -1,15 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux'
-import Waypoint from 'react-waypoint';
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
-import CircularProgress from 'material-ui/CircularProgress';
-import {GridList, GridTile} from 'material-ui/GridList';
-import FlatButton from 'material-ui/FlatButton';
-import Chip from 'material-ui/Chip';
 import AdCard from './ad-card';
 import LoadingCard from './loading-card'
-import {newSearch, startSearch, searchResultsAvailablem, addFavourite, removeFavourite} from './actions'
+import {addFavourite, removeFavourite} from './actions'
 import {search} from './api';
 
 const FavListComponent = ({favourites, addFavourite, removeFavourite}) => {

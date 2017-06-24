@@ -1,13 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux'
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
-import {GridList, GridTile} from 'material-ui/GridList';
-import Chip from 'material-ui/Chip';
-import IconButton from 'material-ui/IconButton';
-import Lightbox from 'react-images';
-import FontIcon from 'material-ui/FontIcon';
-import CircularProgress from 'material-ui/CircularProgress';
+import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'react-toolbox/lib/card';
+import ProgressBar from 'react-toolbox/lib/progress_bar';
 
 
 const LoadingCard = () => {
@@ -16,7 +11,7 @@ const LoadingCard = () => {
         <CardText>
           <div>
             <div style={styles.centerSpinner}>
-              <CircularProgress />
+              <ProgressBar type="circular" />
             </div>
           </div>
         </CardText>

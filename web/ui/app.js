@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider, connect } from 'react-redux'
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import Chip from 'material-ui/Chip';
+import Chip from 'react-toolbox/lib/chip';
 import MainScreen from './main-screen';
 import ResultList from './result-list';
 
@@ -19,11 +18,9 @@ class App extends React.Component {
   }
   render(){
     return (
-      <MuiThemeProvider>
-        <Provider store={store}>
-          <MainScreen/>
-        </Provider>
-      </MuiThemeProvider>
+      <Provider store={store}>
+        <MainScreen/>
+      </Provider>
     );
   }
 }

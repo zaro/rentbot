@@ -2,20 +2,37 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import TextField from 'material-ui/TextField';
-import AutoComplete from 'material-ui/AutoComplete';
-import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
-import Checkbox from 'material-ui/Checkbox';
+import Input from 'react-toolbox/lib/input';
+import AutoComplete from 'react-toolbox/lib/autocomplete';
+import {RadioButton, RadioGroup} from 'react-toolbox/lib/radio';
 import {search, getTotalAdCount} from './api';
 import {newSearch, searchResultsAvailable, clearSearch, totalAdCount} from './actions'
-import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
-import ArrowDownward from 'material-ui/svg-icons/navigation/arrow-downward';
-import ArrowUpward from 'material-ui/svg-icons/navigation/arrow-upward';
-import IconClear from 'material-ui/svg-icons/content/clear';
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
-import IconButton from 'material-ui/IconButton';
-import FontIcon from 'material-ui/FontIcon';
+import AppBar from 'react-toolbox/lib/app_bar';
+import Navigation from 'react-toolbox/lib/navigation';
+import Dropdown from 'react-toolbox/lib/dropdown';
+import { MenuItem }  from 'react-toolbox/lib/menu';
+import { IconButton }  from 'react-toolbox/lib/button';
+import FontIcon from 'react-toolbox/lib/font_icon';
+
+const fromPrice =[
+  {value:0, label:"~"},
+  {value:50, label:"50€"},
+  {value:100, label:"100€"},
+  {value:200, label:"200€"},
+  {value:300, label:"300€"},
+  {value:500, label:"500€"},
+];
+
+const toPrice =[
+  {value:0, label:"~"},
+  {value:100, label:"100€"},
+  {value:150, label:"150€"},
+  {value:200, label:"200€"},
+  {value:300, label:"300€"},
+  {value:500, label:"500€"},
+  {value:1000, label:"1000€"},
+];
+
 
 class SearchBarComponent extends React.Component {
   state = {
@@ -72,15 +89,15 @@ class SearchBarComponent extends React.Component {
     const query = this.getCurrentQuery();
     return (
       <div><form onSubmit={this.onSubmit}>
-        <TextField
-          floatingLabelText="Търси в обяви"
-          fullWidth={true}
+        <Input
+          type="text"
+          label="Търси в обяви"
           value={query.q}
           onChange={(e, value) => {this.setState({q: value})}}
         />
-        <Toolbar>
-          <ToolbarGroup>
-            <RadioButtonGroup style={styles.radioGroup} name="sortBy" defaultSelected={query.sortBy} onChange={(e, value) => {console.log('onChange');this.sortBy(value)}}>
+        <AppBar>
+          <Navigation>
+            <RadioGroup style={styles.radioGroup} name="sortBy" defaultSelected={query.sortBy} onChange={(e, value) => {console.log('onChange');this.sortBy(value)}}>
                 <RadioButton
                   style={{ display: 'inline-block', width: '150px' }}
                   value="price_euro"
@@ -91,44 +108,34 @@ class SearchBarComponent extends React.Component {
                   value="time"
                   label="Дата"
                 />
-            </RadioButtonGroup>
-          </ToolbarGroup>
-          <ToolbarGroup>
-              <Checkbox
-                onCheck={(e, isChecked) => {console.log('onChange');this.sortOrder(isChecked ? 'desc': 'asc')}}
-                checkedIcon={<ArrowUpward />}
-                uncheckedIcon={<ArrowDownward />}
+            </RadioGroup>
+          </Navigation>
+          <Navigation>
+              <IconButton
+                onClick={(e) => {this.sortOrder(query.sortOrder == 'asc' ? 'desc': 'asc')}}
+                icon={query.sortOrder == 'asc' ? 'keyboard arrow down' : 'keyboard arrow up'}
                 label="Сортиране"
-                checked={query.sortOrder === 'desc'}
               />
-          </ToolbarGroup>
-          <ToolbarGroup>
+          </Navigation>
+          <Navigation>
             <span>Цена от</span>
-            <DropDownMenu value={query.minPrice} onChange={(e, i,value) =>this.minPrice(value)}>
-              <MenuItem value={0} primaryText="~" />
-              <MenuItem value={50} primaryText="50€" />
-              <MenuItem value={100} primaryText="100€" />
-              <MenuItem value={150} primaryText="150€" />
-              <MenuItem value={200} primaryText="200€" />
-              <MenuItem value={300} primaryText="300€" />
-              <MenuItem value={500} primaryText="500€" />
-            </DropDownMenu>
+            <Dropdown
+              value={query.minPrice}
+              onChange={(e, i,value) =>this.minPrice(value)}
+              source={fromPrice}
+            />
             <span>до</span>
-            <DropDownMenu value={query.maxPrice} onChange={(e, i,value) => this.maxPrice(value)}>
-              <MenuItem value={0} primaryText="~" />
-              <MenuItem value={100} primaryText="100€" />
-              <MenuItem value={150} primaryText="150€" />
-              <MenuItem value={200} primaryText="200€" />
-              <MenuItem value={300} primaryText="300€" />
-              <MenuItem value={500} primaryText="500€" />
-              <MenuItem value={1000} primaryText="1000€" />
-            </DropDownMenu>
-          </ToolbarGroup>
-          <ToolbarGroup>
+            <Dropdown
+              value={query.maxPrice}
+              onChange={(e, i,value) => this.maxPrice(value)}
+              source={toPrice}
+            />
+          </Navigation>
+          <Navigation>
             <Link to="/fav"><FontIcon className="material-icons">favorite</FontIcon></Link>
-            <IconButton onTouchTap={this.props.clearSearch}><IconClear/></IconButton>
-          </ToolbarGroup>
-      </Toolbar>
+            <IconButton onTouchTap={this.props.clearSearch}><FontIcon value='clear'/></IconButton>
+          </Navigation>
+      </AppBar>
     </form></div>
     );
   }

@@ -2,6 +2,8 @@ const webpack = require('webpack');
 const path = require('path');
 const BundleTracker = require('webpack-bundle-tracker');
 
+const reactToolboxVariables = {};
+
 module.exports = {
   entry: {
       app: ['./ui/index.js'],
@@ -27,8 +29,23 @@ module.exports = {
   ],
   module: {
     rules: [
-      { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" }
+      { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" },
+      {
+        test: /\.css$/,
+        use: [
+          "style-loader",
+          {
+            loader: "css-loader",
+            options: {
+              modules: true,
+              sourceMap: true,
+              importLoaders: 1,
+              localIdentName: "[name]--[local]--[hash:base64:8]"
+            }
+          },
+          "postcss-loader" // has separate config, see postcss.config.js nearby
+        ]
+      },
     ]
-  }
-
+  },
 };
