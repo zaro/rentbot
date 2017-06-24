@@ -76,8 +76,9 @@ class ResultComponent extends React.Component {
             <div className={styles.location}>{ad.location_name}</div>
           </div>
         <CardMedia>
-          {images && images.length &&
-            <Gallery heading="Снимки" showThumbnails images={images.map(src => ({src, thumbnail:src}))} />
+          {(images && images.length>0)
+            ? <Gallery heading="Снимки" showThumbnails images={images.map(src => ({src, thumbnail:src}))} />
+            :null
           }
         </CardMedia>
         <CardText>
