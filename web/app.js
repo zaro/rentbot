@@ -193,7 +193,6 @@ app.post('/api/get', function (req, res) {
 
 
 function renderSingleAdPage(req, res, amp) {
-  console.log(amp);
   es.get({index: ES_INDEX, type: 'ad', id: req.params.docId}).then((doc) =>{
     var component = require('./ui/server/ad');
     // Transpiled ES6 may export components as { default: Component }
