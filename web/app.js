@@ -16,6 +16,7 @@ var DEFAULT_OPTIONS = {
       [
         "css-modules-transform", {
           "preprocessCss": "./babel-sass-render.js",
+          // "processCss": "./babel-process-css.js",
           "extensions": [".css"],
           "generateScopedName": "[name]--[local]--[hash:base64:8]",
         }
@@ -212,11 +213,14 @@ function renderSingleAdPage(req, res, amp) {
     component = component.default || component;
     doc._source._id = doc._id;
     const props = { ad: doc._source, userAgent: req.headers['user-agent'] };
-    const markup = ReactDOMServer.renderToStaticMarkup(
-      React.createElement(component, props)
-    );
+    let markup = null;
+    if (!amp) {
+      markup = ReactDOMServer.renderToStaticMarkup(
+        React.createElement(component, props)
+      );
+    }
     //console.log(doc);
-    res.render(amp? 'ad-amp.html': 'ad.html', {markup, ad: doc._source});
+    res.render(amp ? 'ad-amp.html': 'ad.html', {markup, ad: doc._source});
   }).catch(e => {
     if (e.statusCode == 404) {
       res.render('404.html', {});

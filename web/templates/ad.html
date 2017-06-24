@@ -2,8 +2,29 @@
 
 {% block title %}{{ ad.title }} - Наемател{% endblock %}
 
-{% block headlinks %}
+{# {% block headlinks %}
 <link rel="amphtml" href="/amp/{{ ad._id }}">
+{% endblock %}#}
+
+{% block schemascript %}
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Offer",
+  "price": "{{ ad.price_euro }}",
+  "priceCurrency": "EUR",
+  "name": "{{ ad.title|safe }}",
+  "description" : "{{ ad.description|safe }}",
+  {% if ad.images[0] %}
+  "image": "{{ ad.images[0]|safe }}",
+  {% endif %}
+  "validFrom": "{{ ad.time }}",
+  "potentialAction": {
+    "@context": "http://schema.org",
+    "@type": "RentAction"
+  }
+}
+</script>
 {% endblock %}
 
 {% block app %}
