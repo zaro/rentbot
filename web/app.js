@@ -12,6 +12,15 @@ const DEV_MODE = process.env.NODE_ENV != 'production';
 var DEFAULT_OPTIONS = {
   babel: {
     presets: [ 'react', 'es2015',  "stage-0" ],
+    "plugins": [
+      [
+        "css-modules-transform", {
+          "preprocessCss": "./babel-sass-render.js",
+          "extensions": [".css"],
+          "generateScopedName": "[name]--[local]--[hash:base64:8]",
+        }
+      ]
+    ],
   },
   only: 'ui/',
   cache: !DEV_MODE
