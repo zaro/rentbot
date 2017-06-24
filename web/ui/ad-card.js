@@ -7,6 +7,7 @@ import Chip from 'react-toolbox/lib/chip';
 import { IconButton } from 'react-toolbox/lib/button';
 import Lightbox from 'react-images';
 import FontIcon from 'react-toolbox/lib/font_icon';
+import styles from './css/app.css';
 
 
 class ResultComponent extends React.Component {
@@ -61,62 +62,45 @@ class ResultComponent extends React.Component {
       descriptionArray.push(description)
     }
     return (
-      <Card>
-        <CardTitle
-          title={
-            <div>
-              <a href={ad.url} target='_blank'>
-                <h1 style={styles.h1}>{ad.price_euro && `[${ad.price_euro} €]`} {ad.title || 'Виж оригиналната обява'}</h1>
-                <FontIcon className="material-icons">link</FontIcon>
-              </a>
-              { (listIndex && listTotal) && (<div style={{float: 'right'}}>{listIndex}/{listTotal}</div>)}
+      <Card className={styles.adcard}>
+          <div className={styles.title}>
+            <a href={ad.url} target='_blank'>
+              <h1>{ad.price_euro && `[${ad.price_euro} €]`} {ad.title || 'Виж оригиналната обява'}</h1>
+              <FontIcon className="material-icons">link</FontIcon>
+            </a>
+            { (listIndex && listTotal) && (<div className={styles.counter}>{listIndex}/{listTotal}</div>)}
+            <div className={styles.subtitle}>
+              {`Дата: ${new Date(ad.time).toLocaleString()}, Id:`}
+              <a href={`/${ad._id}`}>{ad._id}</a>
             </div>
-          }
-          subtitle={<span>
-            {`Дата: ${new Date(ad.time).toLocaleString()}, Id:`}
-            <a style={{ textDecoration: 'none' }} href={`/${ad._id}`}>{ad._id}</a>
-          </span>}
-        >{ad.location_name}</CardTitle>
-        <CardMedia>
-
-          <div style={styles.root}>
-            <Gallery images={images} />
-          {/* <Lightbox
-            showThumbnails={true}
-            backdropClosesModal={true}
-            currentImage={this.state.currentImage}
-            imageCountSeparator=' от '
-            images={images.map(src => ({src}))}
-            isOpen={this.state.lightboxIsOpen}
-            onClickPrev={this.prevImage}
-            onClickNext={this.nextImage}
-            onClickImage={(e)=>{e.preventDefault(); e.stopPropagation(); this.nextImage()}}
-            onClickThumbnail={(currentImage)=>{this.setState({currentImage})}}
-            onClose={(e)=>{this.closeLightbox()}}
-          /> */}
+            <div className={styles.location}>{ad.location_name}</div>
           </div>
+        <CardMedia>
+          {images && images.length &&
+            <Gallery heading="Снимки" showThumbnails images={images.map(src => ({src, thumbnail:src}))} />
+          }
         </CardMedia>
         <CardText>
-          <div style={styles.description}>{descriptionArray}</div>
-          <div style={styles.wrapper}>
+          <div className={styles.description}>{descriptionArray}</div>
+          <div className={styles.wrapper}>
             {
-              details.map(b => <Chip style={styles.chip} key={b}>{b}</Chip>)
+              details.map(b => <Chip  key={b}>{b}</Chip>)
             }
           </div>
-          <div style={styles.wrapper}>
+          <div className={styles.wrapper}>
             {
-              bullets.map(b => <Chip style={styles.chip} key={b}>{b}</Chip>)
+              bullets.map(b => <Chip  key={b}>{b}</Chip>)
             }
           </div>
           {addFavourite &&(
-            <IconButton style={styles.favButton} onTouchTap={() => {isFavourite ? removeFavourite(ad._id) : addFavourite(ad._id)}}>
+            <IconButton className={styles.favButton} onClick={() => {isFavourite ? removeFavourite(ad._id) : addFavourite(ad._id)}}>
               { isFavourite
                 ?<FontIcon className="material-icons" >favorite</FontIcon>
                 :<FontIcon className="material-icons" >favorite_border</FontIcon>
               }
             </IconButton>
           )}
-          <div style={{'height':".5em"}}></div>
+          <div className={styles.spacer}></div>
         </CardText>
         <CardActions >
         </CardActions>
@@ -125,43 +109,6 @@ class ResultComponent extends React.Component {
   }
 }
 
-const styles = {
-  h1: {
-    fontSize: 'large',
-    display: 'inline-block',
-  },
-  favButton: {
-    float: 'right',
-  },
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-  },
-  gridList: {
-    display: 'flex',
-    flexWrap: 'nowrap',
-    overflowX: 'auto',
-  },
-  titleStyle: {
-    color: 'rgb(0, 188, 212)',
-  },
-  wrapper: {
-    marginTop: '.5em',
-    marginBottom: '.5em',
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  chip: {
-    margin: 4,
-  },
-  description: {
-    marginTop: '.5em',
-    marginBottom: '.5em',
-    fontSize: 'large',
-    overflow: 'hidden',
-  }
-};
 
 
 export default ResultComponent;

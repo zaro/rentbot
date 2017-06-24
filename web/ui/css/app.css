@@ -1,0 +1,105 @@
+body {
+  font-family: Roboto, sans-serif;
+  margin: 1em;
+}
+a:link, a:visited {
+  color: rgba(0, 0, 0, 0.87);
+}
+a:hover {
+  color: rgba(100, 100, 100, 0.87);
+}
+
+
+.adcard {
+  h1 {
+    font-size: large;
+    display: inline-block;
+  }
+
+  .title {
+    margin-left: 1em;
+    margin-right: 1em;
+
+    .counter {
+      float: right;
+    }
+  }
+  .subtitle {
+      color: rgb(166, 166, 166);
+      a {
+        text-decoration: none;
+        color: rgb(116, 116, 116);
+      }
+  }
+
+  .location {
+  }
+
+  .description {
+      margin-top: .5em;
+      margin-bottom: .5em;
+      font-size: large;
+      overflow: hidden;
+  }
+ .favButton {
+   float: right;
+ }
+
+ .spacer {
+   height: .5em
+ }
+}
+
+
+$gutter-small: 2px;
+$gutter-large: 4px;
+
+.gallerysection {
+  margin-left: 1.5em;
+  margin-right: 1em;
+	margin-bottom: 40px;
+}
+
+.gallery {
+  margin-right: $gutter-small;
+  overflow: hidden;
+
+  @media (minWidth: 500px) {
+    margin-right: $gutter-large;
+  }
+
+  .thumbnail {
+  		box-sizing: border-box;
+  		display: block;
+  		float: left;
+  		line-height: 0;
+  		padding-right: $gutter-small;
+  		padding-bottom: $gutter-small;
+  		overflow: hidden;
+
+  		@media (min-width: 500px) {
+  			padding-right: $gutter-large;
+  			padding-bottom: $gutter-large;
+  		}
+  }
+
+  .landscape {
+  	width: 30%;
+  }
+
+  .square {
+    padding-bottom: 0;
+    width: 40%;
+
+    @media (min-width: 500px) {
+      padding-bottom: 0;
+    }
+  }
+
+  .source {
+    border: 0;
+    display: block;
+    height: 7em;
+    width: auto;
+  }
+}

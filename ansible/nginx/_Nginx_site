@@ -49,6 +49,11 @@ server {
           try_files $uri =404;
         }
 
+        location ^~ /css/ {
+          alias /srv/rentbot/web/build/ui/;
+          try_files $uri =404;
+        }
+
         location ^~ /robots.txt {
           root /srv/rentbot/web/build/sitemap/ ;
 

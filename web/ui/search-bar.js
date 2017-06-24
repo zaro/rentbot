@@ -7,12 +7,13 @@ import AutoComplete from 'react-toolbox/lib/autocomplete';
 import {RadioButton, RadioGroup} from 'react-toolbox/lib/radio';
 import {search, getTotalAdCount} from './api';
 import {newSearch, searchResultsAvailable, clearSearch, totalAdCount} from './actions'
-import AppBar from 'react-toolbox/lib/app_bar';
+import { Grid, Row, Col } from 'react-flexbox-grid';
 import Navigation from 'react-toolbox/lib/navigation';
 import Dropdown from 'react-toolbox/lib/dropdown';
 import { MenuItem }  from 'react-toolbox/lib/menu';
-import { IconButton }  from 'react-toolbox/lib/button';
+import { IconButton, Button }  from 'react-toolbox/lib/button';
 import FontIcon from 'react-toolbox/lib/font_icon';
+import inlineRadioTheme from './css/inline_radio.css';
 
 const fromPrice =[
   {value:0, label:"~"},
@@ -87,68 +88,75 @@ class SearchBarComponent extends React.Component {
 
   render(){
     const query = this.getCurrentQuery();
+    console.log(query);
     return (
-      <div><form onSubmit={this.onSubmit}>
-        <Input
-          type="text"
-          label="Търси в обяви"
-          value={query.q}
-          onChange={(e, value) => {this.setState({q: value})}}
-        />
-        <AppBar>
-          <Navigation>
-            <RadioGroup style={styles.radioGroup} name="sortBy" defaultSelected={query.sortBy} onChange={(e, value) => {console.log('onChange');this.sortBy(value)}}>
-                <RadioButton
-                  style={{ display: 'inline-block', width: '150px' }}
-                  value="price_euro"
-                  label="Цена"
-                />
-                <RadioButton
-                  style={{ display: 'inline-block', width: '150px' }}
-                  value="time"
-                  label="Дата"
-                />
+      <form onSubmit={this.onSubmit}>
+      <Grid fluid>
+        <Row middle="xs" center="xs">
+            <Col xs={10}>
+              <Input
+                type="text"
+                label="Търси в обяви"
+                value={query.q}
+                onChange={(value) => { this.setState({q: value})}}
+              />
+            </Col>
+            <Col xs={1} >
+              <IconButton onClick={this.props.clearSearch}><FontIcon value='clear'/></IconButton>
+            </Col>
+            <Col xs={1} >
+              <IconButton
+                type="submit" icon='search'
+              />
+            </Col>
+        </Row>
+        <Row middle="xs">
+          <Col xs={2} >
+            <RadioGroup name="sortBy" value={query.sortBy} onChange={(value) => {console.log('onChange');this.sortBy(value)}}>
+                <RadioButton theme={inlineRadioTheme} value="price_euro" label="Цена" />
+                <RadioButton theme={inlineRadioTheme} value="time" label="Дата" />
             </RadioGroup>
-          </Navigation>
-          <Navigation>
+          </Col>
+          <Col xs={1}>
+              <Button
+                onClick={(e) => {this.sortOrder(query.sortOrder == 'asc' ? 'desc': 'asc')}}
+              >Сортиране</Button>
+          </Col>
+          <Col xs={1}>
               <IconButton
                 onClick={(e) => {this.sortOrder(query.sortOrder == 'asc' ? 'desc': 'asc')}}
-                icon={query.sortOrder == 'asc' ? 'keyboard arrow down' : 'keyboard arrow up'}
-                label="Сортиране"
+                icon={query.sortOrder == 'desc' ? 'keyboard_arrow_down' : 'keyboard_arrow_up'}
               />
-          </Navigation>
-          <Navigation>
+          </Col>
+          <Col xs={1}>
             <span>Цена от</span>
+          </Col>
+          <Col xs={1}>
             <Dropdown
               value={query.minPrice}
-              onChange={(e, i,value) =>this.minPrice(value)}
+              onChange={this.minPrice}
               source={fromPrice}
             />
+          </Col>
+          <Col xs={1}>
             <span>до</span>
+          </Col>
+          <Col xs={1}>
             <Dropdown
               value={query.maxPrice}
-              onChange={(e, i,value) => this.maxPrice(value)}
+              onChange={this.maxPrice}
               source={toPrice}
             />
-          </Navigation>
-          <Navigation>
+          </Col>
+          <Col  xsOffset={3} xs={1}>
             <Link to="/fav"><FontIcon className="material-icons">favorite</FontIcon></Link>
-            <IconButton onTouchTap={this.props.clearSearch}><FontIcon value='clear'/></IconButton>
-          </Navigation>
-      </AppBar>
-    </form></div>
+          </Col>
+      </Row>
+    </Grid>
+    </form>
     );
   }
 }
-
-const styles = {
-  radioGroup: {
-    display: 'inline-block',
-    width: '300px',
-
-  },
-};
-
 
 const mapStateToProps = (state) => {
   return {

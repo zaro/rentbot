@@ -1,3 +1,13 @@
 {
-  "presets": ["env", "react", "es2015", "stage-0"]
+  "presets": ["env", "react", "es2015", "stage-0"],
+  "plugins": [
+    [
+      "css-modules-transform", {
+        "preprocessCss": "./babel-sass-render.js",
+        "extensions": [".css"],
+        "generateScopedName": "[name]--[local]--[hash:base64:8]",
+        "extractCss": "./build/ui/app.css",
+      }
+    ]
+  ],
 }

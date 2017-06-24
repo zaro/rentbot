@@ -1,0 +1,7 @@
+@import "react-toolbox/lib/radio/theme.css";
+
+.field {
+  display: inline-block;
+  margin-right: 1em;
+  margin-bottom: 0;
+}

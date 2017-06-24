@@ -58,8 +58,12 @@ if (app.settings.env === 'development' ) {
   var compiler = webpack(webpackConfig);
 
   app.use('/static', express.static('static'))
+  app.use('/css', express.static('build/ui'))
   app.use(webpackDevMiddleware(compiler, {
-    publicPath: "/js/" // Same as `output.publicPath` in most cases.
+    publicPath: "/js/", // Same as `output.publicPath` in most cases.
+    stats: {
+		    colors: true
+	  },
   }));
 }
 

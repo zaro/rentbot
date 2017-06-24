@@ -24,7 +24,7 @@ const ResultListComponent = ({totalAdCount, searchResults, next, showNewest, fav
     if (totalAdCount >= 0) {
       return (
         <Message text={`Търси в ${totalAdCount} обяви`} >
-          <Button flat primary={true} onTouchTap={showNewest}>Покажи най-новите обяви</Button>
+          <Button flat primary={true} onClick={showNewest}>Покажи най-новите обяви</Button>
         </Message>
       );
     } else {
@@ -41,7 +41,7 @@ const ResultListComponent = ({totalAdCount, searchResults, next, showNewest, fav
     } else {
       return (
         <Message text="Няма намерени обяви ..." >
-          <Button flat primary={true} onTouchTap={showNewest}>Покажи най-новите обяви</Button>
+          <Button flat primary={true} onClick={showNewest}>Покажи най-новите обяви</Button>
         </Message>
       );
     }

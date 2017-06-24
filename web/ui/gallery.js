@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Lightbox from 'react-images';
+import styles from './css/app.css';
 
 class Gallery extends Component {
 	constructor () {
@@ -53,32 +54,31 @@ class Gallery extends Component {
 	}
 	renderGallery () {
 		const { images } = this.props;
-
 		if (!images) return;
 
-		const gallery = images.filter(i => i.useForDemo).map((obj, i) => {
+		const gallery = images.map((obj, i) => {
 			return (
 				<a
 					href={obj.src}
-					style={classes.thumbnail}
+					className={styles.thumbnail}
 					key={i}
 					onClick={(e) => this.openLightbox(i, e)}
 				>
-					<img src={obj.thumbnail} style={classes.source} />
+					<img src={obj.thumbnail} className={styles.source} />
 				</a>
 			);
 		});
 
 		return (
-			<div style={classes.gallery}>
+			<div className={styles.gallery}>
 				{gallery}
 			</div>
 		);
 	}
 	render () {
 		return (
-			<div className="section">
-				{this.props.heading && <h2>{this.props.heading}</h2>}
+			<div className={styles.gallerysection}>
+				{this.props.heading && <h3>{this.props.heading}</h3>}
 				{this.props.subheading && <p>{this.props.subheading}</p>}
 				{this.renderGallery()}
 				<Lightbox
@@ -104,60 +104,6 @@ Gallery.propTypes = {
 	images: PropTypes.array,
 	showThumbnails: PropTypes.bool,
 	subheading: PropTypes.string,
-};
-
-const gutter = {
-	small: 2,
-	large: 4,
-};
-
-const classes = {
-	gallery: {
-		marginRight: -gutter.small,
-		overflow: 'hidden',
-
-		'@media (min-width: 500px)': {
-			marginRight: -gutter.large,
-		},
-	},
-
-	// anchor
-	thumbnail: {
-		boxSizing: 'border-box',
-		display: 'block',
-		float: 'left',
-		lineHeight: 0,
-		paddingRight: gutter.small,
-		paddingBottom: gutter.small,
-		overflow: 'hidden',
-
-		'@media (min-width: 500px)': {
-			paddingRight: gutter.large,
-			paddingBottom: gutter.large,
-		},
-	},
-
-	// orientation
-	landscape: {
-		width: '30%',
-	},
-	square: {
-		paddingBottom: 0,
-		width: '40%',
-
-		'@media (min-width: 500px)': {
-			paddingBottom: 0,
-		},
-	},
-
-	// actual <img />
-	source: {
-		border: 0,
-		display: 'block',
-		height: 'auto',
-		maxWidth: '100%',
-		width: 'auto',
-	},
 };
 
 export default Gallery;

@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const BundleTracker = require('webpack-bundle-tracker');
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 const reactToolboxVariables = {};
 
@@ -8,7 +9,7 @@ module.exports = {
   entry: {
       app: ['./ui/index.js'],
       vendor: [
-        'react', 'react-dom'
+        'react', 'react-dom',
       ]
   },
   output: {
@@ -18,6 +19,10 @@ module.exports = {
   },
 
   plugins: [
+    new ExtractTextPlugin({
+      filename: 'vendor.css',
+      allChunks: true
+    }),
     new BundleTracker({
       filename: './build/webpack-stats.json',
     }),
@@ -32,19 +37,22 @@ module.exports = {
       { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" },
       {
         test: /\.css$/,
-        use: [
-          "style-loader",
-          {
-            loader: "css-loader",
-            options: {
-              modules: true,
-              sourceMap: true,
-              importLoaders: 1,
-              localIdentName: "[name]--[local]--[hash:base64:8]"
-            }
-          },
-          "postcss-loader" // has separate config, see postcss.config.js nearby
-        ]
+        use: ExtractTextPlugin.extract({
+          use: [
+            //"style-loader",
+            {
+              loader: "css-loader",
+              options: {
+                modules: true,
+                sourceMap: true,
+                importLoaders: 2,
+                localIdentName: "[name]--[local]--[hash:base64:8]"
+              }
+            },
+            "postcss-loader", // has separate config, see postcss.config.js nearby
+            "sass-loader",
+          ],
+        }),
       },
     ]
   },
