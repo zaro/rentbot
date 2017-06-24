@@ -54,6 +54,11 @@ server {
           try_files $uri =404;
         }
 
+        location ^~ /img/ {
+          alias /srv/img/;
+          try_files $uri =404;
+        }
+
         location ^~ /robots.txt {
           root /srv/rentbot/web/build/sitemap/ ;
 
