@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const path = require('path');
 const BundleTracker = require('webpack-bundle-tracker');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
+const prod = process.argv.indexOf('-p') !== -1;
 
 const reactToolboxVariables = {};
 
@@ -34,7 +35,23 @@ module.exports = {
   ],
   module: {
     rules: [
-      { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" },
+      { test: /\.js$/, exclude: /node_modules/,
+        use:{
+          loader: "babel-loader" ,
+          options: {
+            "plugins": [
+              [
+                "css-modules-transform", {
+                  "preprocessCss": "./babel-sass-render.js",
+                  "extensions": [".css"],
+                  "generateScopedName": "[name]--[local]--[hash:base64:8]",
+                  "extractCss": prod ? "./build/ui/app.css" : undefined,
+                }
+              ]
+            ],
+          }
+        }
+      },
       {
         test: /\.css$/,
         use: ExtractTextPlugin.extract({
