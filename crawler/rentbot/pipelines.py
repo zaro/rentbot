@@ -18,7 +18,7 @@ class RentbotImagesPipeline(ImagesPipeline):
 
     def getImageSize(self, relPath):
         path = self.store._get_filesystem_path(relPath)
-        x = {'path': path}
+        x = {'path': relPath}
         im = Image.open(path)
         x['width'], x['height'] = im.size
         return x
