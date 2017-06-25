@@ -1,0 +1,40 @@
+#!/usr/bin/env python3.6
+
+import argparse
+import json
+import datetime
+from elasticsearch import Elasticsearch
+from elasticsearch.helpers import scan
+import elasticsearch.exceptions
+from hashlib import blake2b
+import base64
+
+
+def indexName(d, s=None):
+    #return 'rentbot-' + (s if s else d.date().isoformat())
+    return 'rentbot-all'
+
+
+def exportFeed(luceneQuery, index):
+    for doc in scan(es, index=index, q=luceneQuery):
+        print(json.dumps(doc['_source']))
+
+
+usage = "usage: %prog <feed>"
+description = "Export rentbot feed to json lines."
+parser = argparse.ArgumentParser(description=description)
+parser.add_argument("lucene_query",
+                    default="*",
+                    help="Query to use for export")
+parser.add_argument("-i", "--index",
+                    default=None,
+                    help="Index name")
+args = parser.parse_args()
+
+es = Elasticsearch(['localhost:9200'])
+
+if not args.index:
+    args.index = indexName(None, None)
+
+
+exportFeed(args.lucene_query, args.index)
