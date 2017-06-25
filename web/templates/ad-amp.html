@@ -2,6 +2,25 @@
 
 {% block title %}{{ ad.title }} - Наемател{% endblock %}
 
+{% block metatags %}
+<meta name="description" content="{{ ad.description }}"/>
+<meta property="og:locale" content="bg_BG" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="{{ ad.title }}" />
+<meta property="og:description" content="{{ ad.description }}" />
+<meta property="og:url" content="/{{ ad._id }}" />
+<meta property="og:site_name" content="Наемател" />
+{% for img in ad.local_images %}
+<meta property="og:image" content="/img/{{img.path}}" />
+{% endfor %}
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:description" content="{{ ad.description }}" />
+<meta name="twitter:title" content="{{ ad.title }}" />
+{% if ad.local_images and  ad.local_images.length %}
+<meta name="twitter:image" content="/img/{{ad.local_images[0].path}}" />
+{% endif %}
+{% endblock %}
+
 {% block headlinks %}
 <link rel="canonical" href="/{{ ad._id }}">
 {% endblock %}
