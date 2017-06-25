@@ -9,38 +9,36 @@ import Lightbox from 'react-images';
 import FontIcon from 'react-toolbox/lib/font_icon';
 import styles from './css/app.css';
 
+function imagesArray(images, thumbnail=null) {
+  if(!images){
+    return [];
+  }
+  return images.map((img) => {
+    const v = {
+      src: `/img/${img.path}`,
+      width: img.width,
+      height: img.height,
+    };
+    if(thumbnail && img.thumbnails) {
+      const t = img.thumbnails[thumbnail];
+      if(t){
+        // TODO: workaround fot bug in the spider, should be fine to remove 1-2 weeks after spider is fixed
+        const path = t.path.replace(/^.*(?=thumbs)/, '')
+        v.thumbnail = `/img/${path}`;
+      }
+    }
+    return v;
+  });
+}
+
 
 class ResultComponent extends React.Component {
   state = {
-    lightboxIsOpen: false,
-    currentImage: 0,
-  }
-  openLightbox = () => {
-    this.setState({lightboxIsOpen: true})
-  }
-  closeLightbox = () => {
-    this.setState({lightboxIsOpen: false})
-  }
-  nextImage = () => {
-    const {ad} = this.props;
-    let next = this.state.currentImage + 1;
-    if (next >= ad.images.length) {
-      next = 0;
-    }
-    this.setState({currentImage: next})
-  }
-  prevImage = () => {
-    const {ad} = this.props;
-    let prev = this.state.currentImage - 1;
-    if (prev >= ad.images.length) {
-      prev = ad.images.length-1;
-    }
-    this.setState({currentImage: prev})
   }
   render() {
     const {ad, listIndex, listTotal, isFavourite, addFavourite, removeFavourite} = this.props;
     const description = (ad.description || "");
-    const images = ad.images || [];
+    const images = imagesArray(ad.local_images, 't150');
     const bullets = ad.bullets || [];
     const details = [];
     for(const k in ad.details) {
@@ -77,7 +75,7 @@ class ResultComponent extends React.Component {
           </div>
         <CardMedia>
           {(images && images.length>0)
-            ? <Gallery heading="Снимки" showThumbnails images={images.map(src => ({src, thumbnail:src}))} />
+            ? <Gallery heading="Снимки" showThumbnails images={images} />
             :null
           }
         </CardMedia>

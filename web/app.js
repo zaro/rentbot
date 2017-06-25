@@ -67,6 +67,7 @@ if (app.settings.env === 'development' ) {
   var webpackConfig = require("./webpack.config");
   var compiler = webpack(webpackConfig);
 
+  app.use('/img', express.static('../_test/img'))
   app.use('/static', express.static('static'))
   app.use('/css', express.static('build/ui'))
   app.use(webpackDevMiddleware(compiler, {
