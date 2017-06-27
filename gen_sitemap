@@ -114,6 +114,7 @@ es = Elasticsearch(['localhost:9200'])
 
 print('Create dir:', tmpDir)
 os.makedirs(tmpDir, exist_ok=True)
+os.chmod(tmpDir, 0o755)
 
 allFiles = genSitemap(tmpDir, args.index)
 compressFiles(tmpDir, allFiles)
