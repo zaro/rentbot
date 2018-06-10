@@ -1,6 +1,7 @@
 _test/
 .direnv/
 .scrapy
+.ropeproject
 node_modules
 *.retry
 *.pyc

@@ -3,3 +3,4 @@ Pillow
 dateparser
 elasticsearch
 scrapy-deltafetch
+transliterate

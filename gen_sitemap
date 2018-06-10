@@ -10,7 +10,7 @@ from elasticsearch import Elasticsearch
 from elasticsearch.helpers import scan
 import gzip
 import shutil
-
+from transliterate import translit
 
 maxEntries = 50000
 
@@ -33,13 +33,16 @@ Disallow:
 
 """
 
-def makeUrl(path):
-    return f'https://naematel.com/{path}'
+
+def makeUrl(path, doc):
+    print(doc)
+    title = translit(doc['title'], 'bg', reversed=True)
+    return f'https://naematel.com/{path}/{title}'
 
 
 def addEntry(handle, doc, outputDir):
     lastmod = dateparser.parse(doc.get('time', doc.get('import_date', datetime.datetime.now()))).date().isoformat()
-    url = makeUrl(doc["_id"])
+    url = makeUrl(doc["_id"], doc)
     entry = entryTemplate.format(url=url, lastmod=lastmod)
     if not handle[0]:
         newFilename = f'sitemap-{handle[1]}.xml'
