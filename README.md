@@ -1,4 +1,8 @@
-# Install
+# naematel.com rentbot
+
+Scraping rental ad from several sources with scrapy and serve them over React app
+
+# Install for local dev
 
 macOS:
 
@@ -9,6 +13,12 @@ macOS:
 Ubuntu:
 
     apt install libdb-dev
+
+# Install on a server
+
+    cd ansible
+    ansible-playbook -i hosts install_es.yml
+    ansible-playbook -i hosts install_web.yml
 
 # Generate certiicates on the server :
 
